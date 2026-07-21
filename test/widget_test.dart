@@ -1,30 +1,52 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:reminder_app/main.dart';
+import 'package:reminder_app/app/routes/app_routes.dart';
+import 'package:reminder_app/core/services/storage_service.dart';
+import 'package:reminder_app/modules/onboarding/controllers/onboarding_controller.dart';
+import 'package:reminder_app/modules/onboarding/views/onboarding_view.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  late StorageService storageService;
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  setUp(() async {
+    SharedPreferences.setMockInitialValues({});
+    storageService = await StorageService().init();
+    Get.testMode = true;
+    Get.put<StorageService>(storageService);
+    Get.put(OnboardingController(storageService));
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+  tearDown(Get.reset);
+
+  Widget buildTestApp() {
+    return GetMaterialApp(
+      home: const OnboardingView(),
+      getPages: [
+        GetPage(name: AppRoutes.main, page: () => const SizedBox()),
+      ],
+    );
+  }
+
+  testWidgets('shows a validation error when submitting an empty name',
+      (tester) async {
+    await tester.pumpWidget(buildTestApp());
+
+    await tester.tap(find.text('Continue'));
     await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Please enter your name'), findsOneWidget);
+  });
+
+  testWidgets('saves the entered name locally', (tester) async {
+    await tester.pumpWidget(buildTestApp());
+
+    await tester.enterText(find.byType(TextField), 'Alex');
+    await tester.tap(find.text('Continue'));
+    await tester.pump();
+
+    expect(storageService.userName, 'Alex');
   });
 }
