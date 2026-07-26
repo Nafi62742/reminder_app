@@ -27,7 +27,7 @@ class CustomizeScheduleView extends GetView<CustomizeScheduleController> {
         return ReorderableListView.builder(
           padding: const EdgeInsets.symmetric(vertical: 12),
           itemCount: items.length,
-          onReorder: controller.reorder,
+          onReorderItem: controller.reorder,
           itemBuilder: (context, index) {
             final item = items[index];
             return ListTile(

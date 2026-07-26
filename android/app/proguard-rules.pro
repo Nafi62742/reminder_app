@@ -2,10 +2,6 @@
 -keep class io.flutter.** { *; }
 -keep class io.flutter.plugins.** { *; }
 
-# Firebase
--keep class com.google.firebase.** { *; }
--keep class com.google.android.gms.** { *; }
-
 # flutter_local_notifications — persists scheduled notifications via Gson/TypeToken.
 # Without these, R8 strips generic signatures and the boot receiver crashes on
 # launch with "Missing type parameter".

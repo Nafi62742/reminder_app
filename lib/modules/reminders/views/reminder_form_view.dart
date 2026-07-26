@@ -36,14 +36,23 @@ class ReminderFormView extends GetView<ReminderFormController> {
                 prefixIcon: Icon(Icons.notes_outlined),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
+            Text(
+              'Date & Time (optional)',
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+            ),
+            const SizedBox(height: 8),
             Obx(
               () => _PickerTile(
                 icon: Icons.calendar_today_outlined,
                 label: controller.selectedDate.value == null
                     ? 'Pick a date'
                     : DateFormat('MMM d, y').format(controller.selectedDate.value!),
+                hasValue: controller.selectedDate.value != null,
                 onTap: () => controller.pickDate(context),
+                onClear: controller.clearDate,
               ),
             ),
             const SizedBox(height: 12),
@@ -53,7 +62,9 @@ class ReminderFormView extends GetView<ReminderFormController> {
                 label: controller.selectedTime.value == null
                     ? 'Pick a time'
                     : controller.selectedTime.value!.format(context),
+                hasValue: controller.selectedTime.value != null,
                 onTap: () => controller.pickTime(context),
+                onClear: controller.clearTime,
               ),
             ),
             Obx(() {
@@ -83,12 +94,16 @@ class _PickerTile extends StatelessWidget {
   const _PickerTile({
     required this.icon,
     required this.label,
+    required this.hasValue,
     required this.onTap,
+    required this.onClear,
   });
 
   final IconData icon;
   final String label;
+  final bool hasValue;
   final VoidCallback onTap;
+  final VoidCallback onClear;
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +121,18 @@ class _PickerTile extends StatelessWidget {
           children: [
             Icon(icon, color: colorScheme.primary),
             const SizedBox(width: 12),
-            Text(label, style: Theme.of(context).textTheme.bodyLarge),
+            Expanded(
+              child: Text(label, style: Theme.of(context).textTheme.bodyLarge),
+            ),
+            if (hasValue)
+              GestureDetector(
+                onTap: onClear,
+                child: Icon(
+                  Icons.close,
+                  size: 18,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
           ],
         ),
       ),

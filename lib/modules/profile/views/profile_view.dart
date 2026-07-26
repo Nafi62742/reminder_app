@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../app/theme/app_theme.dart';
+import '../../../app/theme/app_theme_controller.dart';
 import '../../../core/constants/app_constants.dart';
 import '../controllers/profile_controller.dart';
 
@@ -43,6 +45,12 @@ class ProfileView extends GetView<ProfileController> {
               ],
             ),
           ),
+          const SizedBox(height: 32),
+          const Divider(),
+          const SizedBox(height: 16),
+          Text('Theme', style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 12),
+          const _ThemePicker(),
           const SizedBox(height: 32),
           const Divider(),
           const SizedBox(height: 16),
@@ -144,6 +152,83 @@ class _StatCard extends StatelessWidget {
           Text(
             label,
             style: TextStyle(fontSize: 12, color: colorScheme.onPrimaryContainer),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ThemePicker extends StatelessWidget {
+  const _ThemePicker();
+
+  @override
+  Widget build(BuildContext context) {
+    final themeController = Get.find<AppThemeController>();
+    return Obx(
+      () => Wrap(
+        spacing: 16,
+        runSpacing: 12,
+        children: AppTheme.themes.map((option) {
+          final selected = themeController.selectedThemeId.value == option.id;
+          return _ThemeSwatch(
+            option: option,
+            selected: selected,
+            onTap: () => themeController.selectTheme(option.id),
+          );
+        }).toList(),
+      ),
+    );
+  }
+}
+
+class _ThemeSwatch extends StatelessWidget {
+  const _ThemeSwatch({
+    required this.option,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final ThemeOption option;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              color: option.seedColor,
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: selected ? colorScheme.primary : Colors.transparent,
+                width: 3,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: option.seedColor.withValues(alpha: 0.35),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: selected ? const Icon(Icons.check, color: Colors.white) : null,
+          ),
+          const SizedBox(height: 6),
+          Text(
+            option.label,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+              color: selected ? colorScheme.primary : colorScheme.onSurfaceVariant,
+            ),
           ),
         ],
       ),

@@ -51,11 +51,11 @@ class CustomizeScheduleController extends GetxController {
     reload();
   }
 
+  // newIndex arrives pre-adjusted for the removed item (see onReorderItem).
   Future<void> reorder(int oldIndex, int newIndex) async {
     // Optimistic local reorder for a smooth drag animation; persisted below.
-    final adjustedNewIndex = newIndex > oldIndex ? newIndex - 1 : newIndex;
     final item = items.removeAt(oldIndex);
-    items.insert(adjustedNewIndex, item);
+    items.insert(newIndex, item);
     await _repository.reorder(oldIndex, newIndex);
   }
 }

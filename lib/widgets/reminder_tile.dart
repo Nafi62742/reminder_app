@@ -21,7 +21,8 @@ class ReminderTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final isOverdue = !reminder.isCompleted &&
-        reminder.dateTime.isBefore(DateTime.now());
+        reminder.dateTime != null &&
+        reminder.dateTime!.isBefore(DateTime.now());
 
     return Dismissible(
       key: ValueKey(reminder.id),
@@ -60,7 +61,9 @@ class ReminderTile extends StatelessWidget {
             ),
           ),
           subtitle: Text(
-            DateTimeFormatter.friendly(reminder.dateTime),
+            reminder.dateTime == null
+                ? 'No date set'
+                : DateTimeFormatter.friendly(reminder.dateTime!),
             style: TextStyle(
               color: isOverdue ? colorScheme.error : colorScheme.onSurfaceVariant,
               fontWeight: isOverdue ? FontWeight.w600 : FontWeight.normal,

@@ -64,9 +64,9 @@ class ScheduleRepository {
     await _persistItems(_reindexed(items));
   }
 
+  // newIndex arrives pre-adjusted for the removed item (see onReorderItem).
   Future<void> reorder(int oldIndex, int newIndex) async {
     final items = getItems();
-    if (newIndex > oldIndex) newIndex -= 1;
     final item = items.removeAt(oldIndex);
     items.insert(newIndex, item);
     await _persistItems(_reindexed(items));

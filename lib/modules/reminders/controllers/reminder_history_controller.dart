@@ -25,9 +25,11 @@ class ReminderHistoryController extends GetxController {
     final today = DateTimeFormatter.startOfDay(DateTime.now());
     final past = _repository
         .getAll()
-        .where((r) => DateTimeFormatter.startOfDay(r.dateTime).isBefore(today))
+        .where((r) =>
+            r.dateTime != null &&
+            DateTimeFormatter.startOfDay(r.dateTime!).isBefore(today))
         .toList()
-      ..sort((a, b) => b.dateTime.compareTo(a.dateTime));
+      ..sort((a, b) => b.dateTime!.compareTo(a.dateTime!));
     reminders.assignAll(past);
   }
 

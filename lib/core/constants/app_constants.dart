@@ -16,4 +16,5 @@ class StorageKeys {
   static const String scheduleItems = 'schedule_items';
   static const String nextScheduleItemId = 'next_schedule_item_id';
   static const String scheduleCompletions = 'schedule_completions';
+  static const String selectedThemeId = 'selected_theme_id';
 }

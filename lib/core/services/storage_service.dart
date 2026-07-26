@@ -93,4 +93,10 @@ class StorageService extends GetxService {
     all[dateKey] = itemIds.toList();
     return _prefs.setString(StorageKeys.scheduleCompletions, jsonEncode(all));
   }
+
+  String? get selectedThemeId => _prefs.getString(StorageKeys.selectedThemeId);
+
+  Future<void> setSelectedThemeId(String id) {
+    return _prefs.setString(StorageKeys.selectedThemeId, id);
+  }
 }

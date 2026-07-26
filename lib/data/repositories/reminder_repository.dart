@@ -17,7 +17,7 @@ class ReminderRepository {
   Future<ReminderModel> create({
     required String title,
     String? description,
-    required DateTime dateTime,
+    DateTime? dateTime,
   }) async {
     final reminders = getAll();
     final reminder = ReminderModel(

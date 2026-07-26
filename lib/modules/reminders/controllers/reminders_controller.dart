@@ -27,21 +27,31 @@ class RemindersController extends GetxController {
 
   void _loadReminders() {
     final all = _repository.getAll()
-      ..sort((a, b) => a.dateTime.compareTo(b.dateTime));
+      ..sort((a, b) {
+        // Undated reminders sort to the bottom.
+        if (a.dateTime == null && b.dateTime == null) return 0;
+        if (a.dateTime == null) return 1;
+        if (b.dateTime == null) return -1;
+        return a.dateTime!.compareTo(b.dateTime!);
+      });
 
     // Re-sync notifications for any pending reminders — covers cases like a
     // device reboot or the app being reinstalled with restored preferences.
     for (final reminder in all) {
-      if (!reminder.isCompleted && reminder.dateTime.isAfter(DateTime.now())) {
+      if (!reminder.isCompleted &&
+          reminder.dateTime != null &&
+          reminder.dateTime!.isAfter(DateTime.now())) {
         _notifications.scheduleReminder(reminder);
       }
     }
 
     final today = DateTimeFormatter.startOfDay(DateTime.now());
     reminders.assignAll(
-      all.where(
-        (r) => !DateTimeFormatter.startOfDay(r.dateTime).isBefore(today),
-      ),
+      all.where((r) {
+        // Undated reminders always appear in the main list.
+        if (r.dateTime == null) return true;
+        return !DateTimeFormatter.startOfDay(r.dateTime!).isBefore(today);
+      }),
     );
   }
 

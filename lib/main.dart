@@ -4,37 +4,48 @@ import 'package:get/get.dart';
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
 import 'app/theme/app_theme.dart';
+import 'app/theme/app_theme_controller.dart';
 import 'core/constants/app_constants.dart';
 import 'core/services/notification_service.dart';
 import 'core/services/storage_service.dart';
+import 'modules/splash/views/splash_view.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final storageService = await Get.putAsync(() => StorageService().init());
   await Get.putAsync(() => NotificationService().init());
+  Get.put(AppThemeController(storageService));
 
-  final initialRoute = storageService.userName == null
+  final nextRoute = storageService.userName == null
       ? AppRoutes.onboarding
       : AppRoutes.main;
 
-  runApp(ReminderApp(initialRoute: initialRoute));
+  final initialTheme = AppTheme.dataFor(
+    storageService.selectedThemeId ?? AppTheme.defaultThemeId,
+  );
+
+  runApp(ReminderApp(nextRoute: nextRoute, initialTheme: initialTheme));
 }
 
 class ReminderApp extends StatelessWidget {
-  const ReminderApp({super.key, required this.initialRoute});
+  const ReminderApp({
+    super.key,
+    required this.nextRoute,
+    required this.initialTheme,
+  });
 
-  final String initialRoute;
+  final String nextRoute;
+  final ThemeData initialTheme;
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: AppConstants.appName,
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.light,
-      darkTheme: AppTheme.dark,
-      themeMode: ThemeMode.system,
-      initialRoute: initialRoute,
+      theme: initialTheme,
+      themeMode: ThemeMode.light,
+      home: SplashView(nextRoute: nextRoute),
       getPages: AppPages.pages,
     );
   }

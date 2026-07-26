@@ -2,14 +2,14 @@ class ReminderModel {
   final int id;
   final String title;
   final String? description;
-  final DateTime dateTime;
+  final DateTime? dateTime;
   final bool isCompleted;
 
   const ReminderModel({
     required this.id,
     required this.title,
     this.description,
-    required this.dateTime,
+    this.dateTime,
     this.isCompleted = false,
   });
 
@@ -18,13 +18,14 @@ class ReminderModel {
     String? description,
     bool clearDescription = false,
     DateTime? dateTime,
+    bool clearDateTime = false,
     bool? isCompleted,
   }) {
     return ReminderModel(
       id: id,
       title: title ?? this.title,
       description: clearDescription ? null : (description ?? this.description),
-      dateTime: dateTime ?? this.dateTime,
+      dateTime: clearDateTime ? null : (dateTime ?? this.dateTime),
       isCompleted: isCompleted ?? this.isCompleted,
     );
   }
@@ -33,7 +34,7 @@ class ReminderModel {
         'id': id,
         'title': title,
         'description': description,
-        'dateTime': dateTime.toIso8601String(),
+        'dateTime': dateTime?.toIso8601String(),
         'isCompleted': isCompleted,
       };
 
@@ -42,7 +43,9 @@ class ReminderModel {
       id: json['id'] as int,
       title: json['title'] as String,
       description: json['description'] as String?,
-      dateTime: DateTime.parse(json['dateTime'] as String),
+      dateTime: json['dateTime'] == null
+          ? null
+          : DateTime.parse(json['dateTime'] as String),
       isCompleted: json['isCompleted'] as bool? ?? false,
     );
   }

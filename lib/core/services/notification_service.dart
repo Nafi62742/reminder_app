@@ -94,14 +94,16 @@ class NotificationService extends GetxService {
 
   Future<void> scheduleReminder(ReminderModel reminder) async {
     await cancelReminder(reminder.id);
-    if (reminder.isCompleted || reminder.dateTime.isBefore(DateTime.now())) {
+    if (reminder.dateTime == null ||
+        reminder.isCompleted ||
+        reminder.dateTime!.isBefore(DateTime.now())) {
       return;
     }
     await _plugin.zonedSchedule(
       reminder.id,
       reminder.title,
       reminder.description,
-      tz.TZDateTime.from(reminder.dateTime, tz.local),
+      tz.TZDateTime.from(reminder.dateTime!, tz.local),
       const NotificationDetails(
         android: _androidDetails,
         iOS: DarwinNotificationDetails(),

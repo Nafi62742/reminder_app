@@ -28,12 +28,14 @@ class ReminderFormController extends GetxController {
       _editing = arg;
       titleController.text = arg.title;
       descriptionController.text = arg.description ?? '';
-      selectedDate.value = DateTime(
-        arg.dateTime.year,
-        arg.dateTime.month,
-        arg.dateTime.day,
-      );
-      selectedTime.value = TimeOfDay.fromDateTime(arg.dateTime);
+      if (arg.dateTime != null) {
+        selectedDate.value = DateTime(
+          arg.dateTime!.year,
+          arg.dateTime!.month,
+          arg.dateTime!.day,
+        );
+        selectedTime.value = TimeOfDay.fromDateTime(arg.dateTime!);
+      }
     }
   }
 
@@ -63,25 +65,25 @@ class ReminderFormController extends GetxController {
     if (picked != null) selectedTime.value = picked;
   }
 
+  void clearDate() => selectedDate.value = null;
+  void clearTime() => selectedTime.value = null;
+
   Future<void> save() async {
     final title = titleController.text.trim();
     if (title.isEmpty) {
       errorText.value = 'Please enter a title';
       return;
     }
-    if (selectedDate.value == null || selectedTime.value == null) {
-      errorText.value = 'Please pick a date and time';
-      return;
+    errorText.value = null;
+
+    // Build dateTime only when both pickers have a value.
+    DateTime? dateTime;
+    final date = selectedDate.value;
+    final time = selectedTime.value;
+    if (date != null && time != null) {
+      dateTime = DateTime(date.year, date.month, date.day, time.hour, time.minute);
     }
-    final date = selectedDate.value!;
-    final time = selectedTime.value!;
-    final dateTime = DateTime(
-      date.year,
-      date.month,
-      date.day,
-      time.hour,
-      time.minute,
-    );
+
     final description = descriptionController.text.trim();
 
     if (isEditing) {
@@ -90,16 +92,23 @@ class ReminderFormController extends GetxController {
         description: description.isEmpty ? null : description,
         clearDescription: description.isEmpty,
         dateTime: dateTime,
+        clearDateTime: dateTime == null,
       );
       await _repository.update(updated);
-      await _notifications.scheduleReminder(updated);
+      if (dateTime != null) {
+        await _notifications.scheduleReminder(updated);
+      } else {
+        await _notifications.cancelReminder(updated.id);
+      }
     } else {
       final created = await _repository.create(
         title: title,
         description: description.isEmpty ? null : description,
         dateTime: dateTime,
       );
-      await _notifications.scheduleReminder(created);
+      if (dateTime != null) {
+        await _notifications.scheduleReminder(created);
+      }
     }
     Get.back();
   }
