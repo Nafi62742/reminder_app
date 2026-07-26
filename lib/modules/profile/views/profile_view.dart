@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../../app/theme/app_theme.dart';
 import '../../../app/theme/app_theme_controller.dart';
 import '../../../core/constants/app_constants.dart';
+import '../../../widgets/tab_header.dart';
 import '../controllers/profile_controller.dart';
 
 class ProfileView extends GetView<ProfileController> {
@@ -12,112 +13,169 @@ class ProfileView extends GetView<ProfileController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Profile & Progress')),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
+      body: Column(
         children: [
-          Text('Your Progress', style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 12),
-          Obx(
-            () => Row(
+          Obx(() {
+            final name = controller.nameController.text;
+            final initial = name.isNotEmpty ? name[0].toUpperCase() : '?';
+            return TabHeader(
+              title: 'Profile & Progress',
+              subtitle: name.isEmpty ? null : name,
+              trailing: CircleAvatar(
+                radius: 22,
+                backgroundColor: Colors.white.withValues(alpha: 0.25),
+                child: Text(
+                  initial,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+            );
+          }),
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.all(16),
               children: [
-                Expanded(
-                  child: _StatCard(
-                    label: 'Today',
-                    value:
-                        '${controller.todayCount.value}/${controller.totalItems.value}',
+                _SectionCard(
+                  title: 'Your Progress',
+                  child: Obx(
+                    () => Row(
+                      children: [
+                        Expanded(
+                          child: _StatCard(
+                            label: 'Today',
+                            value:
+                                '${controller.todayCount.value}/${controller.totalItems.value}',
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: _StatCard(
+                            label: 'This Week',
+                            value: '${controller.weekCount.value}',
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: _StatCard(
+                            label: 'This Month',
+                            value: '${controller.monthCount.value}',
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: _StatCard(
-                    label: 'This Week',
-                    value: '${controller.weekCount.value}',
+                const SizedBox(height: 16),
+                const _SectionCard(
+                  title: 'Theme',
+                  child: _ThemePicker(),
+                ),
+                const SizedBox(height: 16),
+                _SectionCard(
+                  title: 'Your Profile',
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      TextField(
+                        controller: controller.nameController,
+                        textCapitalization: TextCapitalization.words,
+                        decoration: const InputDecoration(
+                          labelText: 'Name',
+                          prefixIcon: Icon(Icons.person_outline),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: controller.emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: const InputDecoration(
+                          labelText: 'Email',
+                          prefixIcon: Icon(Icons.email_outlined),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: controller.weightController,
+                              keyboardType: const TextInputType.numberWithOptions(
+                                  decimal: true),
+                              decoration: const InputDecoration(
+                                labelText: 'Weight (kg)',
+                                prefixIcon: Icon(Icons.monitor_weight_outlined),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: TextField(
+                              controller: controller.heightController,
+                              keyboardType: const TextInputType.numberWithOptions(
+                                  decimal: true),
+                              decoration: const InputDecoration(
+                                labelText: 'Height (cm)',
+                                prefixIcon: Icon(Icons.height),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: controller.saveProfile,
+                        child: const Text('Save Profile'),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: _StatCard(
-                    label: 'This Month',
-                    value: '${controller.monthCount.value}',
+                const SizedBox(height: 16),
+                Obx(
+                  () => _SectionCard(
+                    title: null,
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: const Icon(Icons.info_outline),
+                      title: const Text(AppConstants.appName),
+                      subtitle: Text('Version ${controller.appVersion.value}'),
+                    ),
                   ),
                 ),
+                const SizedBox(height: 16),
               ],
             ),
           ),
-          const SizedBox(height: 32),
-          const Divider(),
-          const SizedBox(height: 16),
-          Text('Theme', style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 12),
-          const _ThemePicker(),
-          const SizedBox(height: 32),
-          const Divider(),
-          const SizedBox(height: 16),
-          Text('Your Profile', style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 12),
-          TextField(
-            controller: controller.nameController,
-            textCapitalization: TextCapitalization.words,
-            decoration: const InputDecoration(
-              labelText: 'Name',
-              prefixIcon: Icon(Icons.person_outline),
-            ),
-          ),
-          const SizedBox(height: 12),
-          TextField(
-            controller: controller.emailController,
-            keyboardType: TextInputType.emailAddress,
-            decoration: const InputDecoration(
-              labelText: 'Email',
-              prefixIcon: Icon(Icons.email_outlined),
-            ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: controller.weightController,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(
-                    labelText: 'Weight (kg)',
-                    prefixIcon: Icon(Icons.monitor_weight_outlined),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: TextField(
-                  controller: controller.heightController,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(
-                    labelText: 'Height (cm)',
-                    prefixIcon: Icon(Icons.height),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: controller.saveProfile,
-            child: const Text('Save Profile'),
-          ),
-          const SizedBox(height: 32),
-          const Divider(),
-          const SizedBox(height: 16),
-          Obx(
-            () => ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const Icon(Icons.info_outline),
-              title: const Text(AppConstants.appName),
-              subtitle: Text('Version ${controller.appVersion.value}'),
-            ),
-          ),
         ],
+      ),
+    );
+  }
+}
+
+class _SectionCard extends StatelessWidget {
+  const _SectionCard({required this.title, required this.child});
+
+  final String? title;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (title != null) ...[
+              Text(title!, style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(height: 12),
+            ],
+            child,
+          ],
+        ),
       ),
     );
   }

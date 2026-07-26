@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../core/utils/schedule_time_formatter.dart';
 import '../../../data/models/schedule_item_model.dart';
+import '../../../widgets/tab_header.dart';
 import '../controllers/customize_schedule_controller.dart';
 
 class CustomizeScheduleView extends GetView<CustomizeScheduleController> {
@@ -11,55 +12,108 @@ class CustomizeScheduleView extends GetView<CustomizeScheduleController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Customize Schedule')),
-      body: Obx(() {
-        final items = controller.items;
-        if (items.isEmpty) {
-          return Center(
-            child: Text(
-              'Tap + to add your first routine item',
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
-            ),
-          );
-        }
-        return ReorderableListView.builder(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          itemCount: items.length,
-          onReorderItem: controller.reorder,
-          itemBuilder: (context, index) {
-            final item = items[index];
-            return ListTile(
-              key: ValueKey(item.id),
-              title: Text(item.title),
-              subtitle: item.timeMinutes != null
-                  ? Text(ScheduleTimeFormatter.formatMinutes(item.timeMinutes!))
-                  : null,
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit_outlined),
-                    onPressed: () => _showItemDialog(context, item: item),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete_outline),
-                    onPressed: () => controller.deleteItem(item),
-                  ),
-                  ReorderableDragStartListener(
-                    index: index,
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 4),
-                      child: Icon(Icons.drag_handle),
+      body: Column(
+        children: [
+          const TabHeader(
+            title: 'Customize',
+            subtitle: 'Edit your daily routine items',
+          ),
+          Expanded(
+            child: Obx(() {
+              final items = controller.items;
+              if (items.isEmpty) {
+                return Center(
+                  child: Text(
+                    'Tap + to add your first routine item',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
-                ],
-              ),
-            );
-          },
-        );
-      }),
+                );
+              }
+              return ReorderableListView.builder(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                itemCount: items.length,
+                onReorderItem: controller.reorder,
+                itemBuilder: (context, index) {
+                  final item = items[index];
+                  final colorScheme = Theme.of(context).colorScheme;
+                  return Card(
+                    key: ValueKey(item.id),
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 6),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 4),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 36,
+                            height: 36,
+                            margin: const EdgeInsets.only(right: 12),
+                            decoration: BoxDecoration(
+                              color: colorScheme.primaryContainer,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              item.timeMinutes != null
+                                  ? Icons.access_time
+                                  : Icons.check_circle_outline,
+                              size: 18,
+                              color: colorScheme.onPrimaryContainer,
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  item.title,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                if (item.timeMinutes != null)
+                                  Text(
+                                    ScheduleTimeFormatter.formatMinutes(
+                                        item.timeMinutes!),
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: colorScheme.onSurfaceVariant,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.edit_outlined),
+                            onPressed: () =>
+                                _showItemDialog(context, item: item),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete_outline),
+                            onPressed: () => controller.deleteItem(item),
+                          ),
+                          ReorderableDragStartListener(
+                            index: index,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 4),
+                              child: Icon(
+                                Icons.drag_handle,
+                                color: colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
+            }),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showItemDialog(context),
         child: const Icon(Icons.add),

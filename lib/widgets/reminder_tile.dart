@@ -24,54 +24,97 @@ class ReminderTile extends StatelessWidget {
         reminder.dateTime != null &&
         reminder.dateTime!.isBefore(DateTime.now());
 
-    return Dismissible(
-      key: ValueKey(reminder.id),
-      direction: DismissDirection.endToStart,
-      background: Container(
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        decoration: BoxDecoration(
-          color: colorScheme.errorContainer,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Icon(Icons.delete_outline, color: colorScheme.onErrorContainer),
-      ),
-      onDismissed: (_) => onDelete(),
-      child: Card(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        elevation: 0,
-        color: colorScheme.surfaceContainerHigh,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: ListTile(
-          onTap: onTap,
-          leading: Checkbox(
-            value: reminder.isCompleted,
-            onChanged: (_) => onToggle(),
-            shape: const CircleBorder(),
-          ),
-          title: Text(
-            reminder.title,
-            style: TextStyle(
-              decoration:
-                  reminder.isCompleted ? TextDecoration.lineThrough : null,
-              color: reminder.isCompleted
-                  ? colorScheme.onSurfaceVariant
-                  : colorScheme.onSurface,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          subtitle: Text(
-            reminder.dateTime == null
-                ? 'No date set'
-                : DateTimeFormatter.friendly(reminder.dateTime!),
-            style: TextStyle(
-              color: isOverdue ? colorScheme.error : colorScheme.onSurfaceVariant,
-              fontWeight: isOverdue ? FontWeight.w600 : FontWeight.normal,
-            ),
-          ),
-          trailing: IconButton(
-            icon: const Icon(Icons.delete_outline),
-            onPressed: onDelete,
+    final accent = reminder.isCompleted
+        ? colorScheme.outline
+        : isOverdue
+            ? colorScheme.error
+            : colorScheme.primary;
+
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(width: 4, color: accent),
+              Expanded(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                  child: Row(
+                    children: [
+                      Checkbox(
+                        value: reminder.isCompleted,
+                        onChanged: (_) => onToggle(),
+                        shape: const CircleBorder(),
+                      ),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              reminder.title,
+                              style: TextStyle(
+                                decoration: reminder.isCompleted
+                                    ? TextDecoration.lineThrough
+                                    : null,
+                                color: reminder.isCompleted
+                                    ? colorScheme.onSurfaceVariant
+                                    : colorScheme.onSurface,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 15,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.schedule,
+                                  size: 13,
+                                  color: isOverdue
+                                      ? colorScheme.error
+                                      : colorScheme.onSurfaceVariant,
+                                ),
+                                const SizedBox(width: 4),
+                                Flexible(
+                                  child: Text(
+                                    reminder.dateTime == null
+                                        ? 'No date set'
+                                        : DateTimeFormatter.friendly(
+                                            reminder.dateTime!),
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: isOverdue
+                                          ? colorScheme.error
+                                          : colorScheme.onSurfaceVariant,
+                                      fontWeight: isOverdue
+                                          ? FontWeight.w700
+                                          : FontWeight.normal,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete_outline),
+                        color: colorScheme.onSurfaceVariant,
+                        onPressed: onDelete,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

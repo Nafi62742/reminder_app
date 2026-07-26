@@ -13,16 +13,15 @@ class MainShellView extends GetView<MainShellController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Obx(
-        () => IndexedStack(
-          index: controller.currentIndex.value,
-          children: const [
-            RemindersView(),
-            ScheduleView(),
-            CustomizeScheduleView(),
-            ProfileView(),
-          ],
-        ),
+      body: PageView(
+        controller: controller.pageController,
+        onPageChanged: controller.onPageChanged,
+        children: const [
+          RemindersView(),
+          ScheduleView(),
+          CustomizeScheduleView(),
+          ProfileView(),
+        ],
       ),
       bottomNavigationBar: Obx(
         () => NavigationBar(
