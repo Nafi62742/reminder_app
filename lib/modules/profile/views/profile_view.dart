@@ -15,26 +15,30 @@ class ProfileView extends GetView<ProfileController> {
     return Scaffold(
       body: Column(
         children: [
-          Obx(() {
-            final name = controller.nameController.text;
-            final initial = name.isNotEmpty ? name[0].toUpperCase() : '?';
-            return TabHeader(
-              title: 'Profile & Progress',
-              subtitle: name.isEmpty ? null : name,
-              trailing: CircleAvatar(
-                radius: 22,
-                backgroundColor: Colors.white.withValues(alpha: 0.25),
-                child: Text(
-                  initial,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 18,
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable: controller.nameController,
+            builder: (context, value, child) {
+              final name = value.text;
+              final initial = name.isNotEmpty ? name[0].toUpperCase() : '?';
+
+              return TabHeader(
+                title: 'Profile & Progress',
+                subtitle: name.isEmpty ? null : name,
+                trailing: CircleAvatar(
+                  radius: 22,
+                  backgroundColor: Colors.white.withValues(alpha: 0.25),
+                  child: Text(
+                    initial,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 18,
+                    ),
                   ),
                 ),
-              ),
-            );
-          }),
+              );
+            },
+          ),
           Expanded(
             child: ListView(
               padding: const EdgeInsets.all(16),

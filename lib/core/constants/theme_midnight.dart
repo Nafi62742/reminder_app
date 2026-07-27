@@ -6,6 +6,6 @@ class MidnightTheme {
 
   static const String id = 'midnight';
   static const String label = 'Midnight';
-  static const Color seedColor = Color(0xFF7C4DFF);
+  static const Color seedColor = Color(0xFF2196F3);
   static const Brightness brightness = Brightness.dark;
 }
