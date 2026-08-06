@@ -12,36 +12,20 @@ class ProfileView extends GetView<ProfileController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          ValueListenableBuilder<TextEditingValue>(
-            valueListenable: controller.nameController,
-            builder: (context, value, child) {
-              final name = value.text;
-              final initial = name.isNotEmpty ? name[0].toUpperCase() : '?';
+    final theme = Theme.of(context);
+    final topPadding = MediaQuery.of(context).padding.top + 96.0;
 
-              return TabHeader(
-                title: 'Profile & Progress',
-                subtitle: name.isEmpty ? null : name,
-                trailing: CircleAvatar(
-                  radius: 22,
-                  backgroundColor: Colors.white.withValues(alpha: 0.25),
-                  child: Text(
-                    initial,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w800,
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-          Expanded(
+    return Scaffold(
+      body: Stack(
+        children: [
+          Positioned.fill(
             child: ListView(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.only(
+                top: topPadding + 8,
+                bottom: 110,
+                left: 16,
+                right: 16,
+              ),
               children: [
                 _SectionCard(
                   title: 'Your Progress',
@@ -151,6 +135,35 @@ class ProfileView extends GetView<ProfileController> {
                 ),
                 const SizedBox(height: 16),
               ],
+            ),
+          ),
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: ValueListenableBuilder<TextEditingValue>(
+              valueListenable: controller.nameController,
+              builder: (context, value, child) {
+                final name = value.text;
+                final initial = name.isNotEmpty ? name[0].toUpperCase() : '?';
+
+                return TabHeader(
+                  title: 'Profile & Progress',
+                  subtitle: name.isEmpty ? null : name,
+                  trailing: CircleAvatar(
+                    radius: 22,
+                    backgroundColor: theme.colorScheme.primary.withValues(alpha: 0.15),
+                    child: Text(
+                      initial,
+                      style: TextStyle(
+                        color: theme.colorScheme.primary,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         ],

@@ -19,13 +19,14 @@ class NotificationService extends GetxService {
     channelDescription: 'Notifications for scheduled reminders',
     importance: Importance.max,
     priority: Priority.high,
+    largeIcon: DrawableResourceAndroidBitmap('ic_launcher'),
   );
 
   Future<NotificationService> init() async {
     tz_data.initializeTimeZones();
     _setLocalTimeZone();
 
-    const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidInit = AndroidInitializationSettings('@drawable/ic_launcher_foreground');
     const darwinInit = DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,

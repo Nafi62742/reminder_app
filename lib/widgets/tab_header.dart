@@ -1,8 +1,8 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 
-/// Shared rounded, gradient header banner used at the top of each of the 4
-/// main tabs — gives the app a consistent, more distinctive look than a
-/// plain flat AppBar on every screen.
+/// Shared rounded, glassmorphic header banner used at the top of each of the 4
+/// main tabs — gives the app a consistent, premium look with a blurred background.
 class TabHeader extends StatelessWidget {
   const TabHeader({
     super.key,
@@ -19,62 +19,86 @@ class TabHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(20, 16, 12, 24),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [colorScheme.primary, colorScheme.primary.withValues(alpha: 0.78)],
-        ),
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(28),
-          bottomRight: Radius.circular(28),
-        ),
-      ),
-      child: SafeArea(
-        bottom: false,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = colorScheme.brightness == Brightness.dark;
+
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.fromLTRB(20, 12, 16, 20),
+          decoration: BoxDecoration(
+            color: colorScheme.surface.withValues(alpha: isDark ? 0.70 : 0.78),
+            border: Border(
+              bottom: BorderSide(
+                color: isDark 
+                    ? Colors.white.withValues(alpha: 0.08)
+                    : colorScheme.outlineVariant.withValues(alpha: 0.3),
+                width: 1,
+              ),
+            ),
+          ),
+          child: SafeArea(
+            bottom: false,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        title,
-                        style: TextStyle(
-                          color: colorScheme.onPrimary,
-                          fontSize: 24,
-                          fontWeight: FontWeight.w800,
-                        ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            title,
+                            style: TextStyle(
+                              color: colorScheme.onSurface,
+                              fontSize: 26,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: -0.5,
+                            ),
+                          ),
+                          if (subtitle != null) ...[
+                            const SizedBox(height: 4),
+                            Text(
+                              subtitle!,
+                              style: TextStyle(
+                                color: colorScheme.onSurfaceVariant,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
-                      if (subtitle != null) ...[
-                        const SizedBox(height: 4),
-                        Text(
-                          subtitle!,
-                          style: TextStyle(
-                            color: colorScheme.onPrimary.withValues(alpha: 0.85),
-                            fontSize: 13,
+                    ),
+                    if (trailing != null) ...[
+                      const SizedBox(width: 8),
+                      Theme(
+                        data: theme.copyWith(
+                          iconButtonTheme: IconButtonThemeData(
+                            style: IconButton.styleFrom(
+                              backgroundColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
+                              foregroundColor: colorScheme.onSurface,
+                            ),
                           ),
                         ),
-                      ],
+                        child: trailing!,
+                      ),
                     ],
-                  ),
+                  ],
                 ),
-                if (trailing != null) trailing!,
+                if (bottom != null) ...[
+                  const SizedBox(height: 16),
+                  bottom!,
+                ],
               ],
             ),
-            if (bottom != null) ...[
-              const SizedBox(height: 16),
-              bottom!,
-            ],
-          ],
+          ),
         ),
       ),
     );

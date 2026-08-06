@@ -11,14 +11,12 @@ class CustomizeScheduleView extends GetView<CustomizeScheduleController> {
 
   @override
   Widget build(BuildContext context) {
+    final topPadding = MediaQuery.of(context).padding.top + 96.0;
+
     return Scaffold(
-      body: Column(
+      body: Stack(
         children: [
-          const TabHeader(
-            title: 'Customize',
-            subtitle: 'Edit your daily routine items',
-          ),
-          Expanded(
+          Positioned.fill(
             child: Obx(() {
               final items = controller.items;
               if (items.isEmpty) {
@@ -32,7 +30,10 @@ class CustomizeScheduleView extends GetView<CustomizeScheduleController> {
                 );
               }
               return ReorderableListView.builder(
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding: EdgeInsets.only(
+                  top: topPadding + 8,
+                  bottom: 110,
+                ),
                 itemCount: items.length,
                 onReorderItem: controller.reorder,
                 itemBuilder: (context, index) {
@@ -99,7 +100,7 @@ class CustomizeScheduleView extends GetView<CustomizeScheduleController> {
                             child: Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 4),
                               child: Icon(
-                                Icons.drag_handle,
+                               Icons.drag_handle,
                                 color: colorScheme.onSurfaceVariant,
                               ),
                             ),
@@ -112,11 +113,23 @@ class CustomizeScheduleView extends GetView<CustomizeScheduleController> {
               );
             }),
           ),
+          const Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: TabHeader(
+              title: 'Customize',
+              subtitle: 'Edit your daily routine items',
+            ),
+          ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showItemDialog(context),
-        child: const Icon(Icons.add),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 80),
+        child: FloatingActionButton(
+          onPressed: () => _showItemDialog(context),
+          child: const Icon(Icons.add),
+        ),
       ),
     );
   }

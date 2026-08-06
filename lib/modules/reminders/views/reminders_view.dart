@@ -11,29 +11,23 @@ class RemindersView extends GetView<RemindersController> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final topPadding = MediaQuery.of(context).padding.top + 96.0;
+
     return Scaffold(
-      body: Column(
+      body: Stack(
         children: [
-          Obx(
-            () => TabHeader(
-              title: 'Hi, ${controller.userName}',
-              subtitle: '${DateFormat('EEEE, MMM d').format(DateTime.now())} · '
-                  '${controller.reminders.length} upcoming',
-              trailing: IconButton(
-                icon: const Icon(Icons.history, color: Colors.white),
-                tooltip: 'History',
-                onPressed: controller.goToHistory,
-              ),
-            ),
-          ),
-          Expanded(
+          Positioned.fill(
             child: Obx(() {
               final reminders = controller.reminders;
               if (reminders.isEmpty) {
-                return _EmptyState(colorScheme: Theme.of(context).colorScheme);
+                return _EmptyState(colorScheme: theme.colorScheme);
               }
               return ListView.builder(
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding: EdgeInsets.only(
+                  top: topPadding + 8,
+                  bottom: 110,
+                ),
                 itemCount: reminders.length,
                 itemBuilder: (context, index) {
                   final reminder = reminders[index];
@@ -47,11 +41,31 @@ class RemindersView extends GetView<RemindersController> {
               );
             }),
           ),
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Obx(
+              () => TabHeader(
+                title: 'Hi, ${controller.userName}',
+                subtitle: '${DateFormat('EEEE, MMM d').format(DateTime.now())} · '
+                    '${controller.reminders.length} upcoming',
+                trailing: IconButton(
+                  icon: const Icon(Icons.history),
+                  tooltip: 'History',
+                  onPressed: controller.goToHistory,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: controller.goToAdd,
-        child: const Icon(Icons.add),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 80),
+        child: FloatingActionButton(
+          onPressed: controller.goToAdd,
+          child: const Icon(Icons.add),
+        ),
       ),
     );
   }
