@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -94,26 +95,56 @@ class NotificationService extends GetxService {
   }
 
   Future<void> scheduleReminder(ReminderModel reminder) async {
-    await cancelReminder(reminder.id);
-    if (reminder.dateTime == null ||
-        reminder.isCompleted ||
-        reminder.dateTime!.isBefore(DateTime.now())) {
-      return;
+    try {
+      await cancelReminder(reminder.id);
+      if (reminder.dateTime == null ||
+          reminder.isCompleted ||
+          reminder.dateTime!.isBefore(DateTime.now())) {
+        return;
+      }
+      try {
+        await _plugin.zonedSchedule(
+          reminder.id,
+          reminder.title,
+          reminder.description,
+          tz.TZDateTime.from(reminder.dateTime!, tz.local),
+          const NotificationDetails(
+            android: _androidDetails,
+            iOS: DarwinNotificationDetails(),
+          ),
+          androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+          uiLocalNotificationDateInterpretation:
+              UILocalNotificationDateInterpretation.absoluteTime,
+        );
+      } catch (e) {
+        // If exact alarm scheduling fails (e.g. missing SCHEDULE_EXACT_ALARM permission on Android 13/14+),
+        // fallback to inexact scheduling (which does not require the permission).
+        debugPrint('Exact scheduling failed, falling back to inexact: $e');
+        await _plugin.zonedSchedule(
+          reminder.id,
+          reminder.title,
+          reminder.description,
+          tz.TZDateTime.from(reminder.dateTime!, tz.local),
+          const NotificationDetails(
+            android: _androidDetails,
+            iOS: DarwinNotificationDetails(),
+          ),
+          androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+          uiLocalNotificationDateInterpretation:
+              UILocalNotificationDateInterpretation.absoluteTime,
+        );
+      }
+    } catch (e) {
+      // Log or handle the error gracefully so it doesn't crash the save flow
+      debugPrint('Error scheduling notification: $e');
     }
-    await _plugin.zonedSchedule(
-      reminder.id,
-      reminder.title,
-      reminder.description,
-      tz.TZDateTime.from(reminder.dateTime!, tz.local),
-      const NotificationDetails(
-        android: _androidDetails,
-        iOS: DarwinNotificationDetails(),
-      ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-    );
   }
 
-  Future<void> cancelReminder(int id) => _plugin.cancel(id);
+  Future<void> cancelReminder(int id) async {
+    try {
+      await _plugin.cancel(id);
+    } catch (e) {
+      debugPrint('Error cancelling notification: $e');
+    }
+  }
 }

@@ -214,7 +214,7 @@ class _ScheduleItemDialogState extends State<_ScheduleItemDialog> {
     } else {
       controller.updateItem(widget.item!, title, _time);
     }
-    Get.back();
+    Navigator.of(context).pop();
   }
 
   @override
@@ -260,7 +260,7 @@ class _ScheduleItemDialogState extends State<_ScheduleItemDialog> {
         ],
       ),
       actions: [
-        TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
+        TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Cancel')),
         FilledButton(onPressed: _save, child: const Text('Save')),
       ],
     );
