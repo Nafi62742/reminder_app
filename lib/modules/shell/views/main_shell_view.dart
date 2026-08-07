@@ -28,7 +28,6 @@ class MainShellView extends GetView<MainShellController> {
         ],
       ),
       bottomNavigationBar: Container(
-        height: 80,
         decoration: BoxDecoration(
           color: colorScheme.surfaceContainer,
           boxShadow: [
@@ -47,15 +46,21 @@ class MainShellView extends GetView<MainShellController> {
             ),
           ),
         ),
-        child: Obx(
-          () => Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNavItem(context, 0, Icons.checklist_outlined, Icons.checklist, 'Reminders'),
-              _buildNavItem(context, 1, Icons.wb_sunny_outlined, Icons.wb_sunny, 'Schedule'),
-              _buildNavItem(context, 2, Icons.edit_note_outlined, Icons.edit_note, 'Customize'),
-              _buildNavItem(context, 3, Icons.settings_outlined, Icons.settings, 'Settings'),
-            ],
+        child: SafeArea(
+          top: false,
+          child: SizedBox(
+            height: 72,
+            child: Obx(
+              () => Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _buildNavItem(context, 0, Icons.checklist_outlined, Icons.checklist, 'Reminders'),
+                  _buildNavItem(context, 1, Icons.wb_sunny_outlined, Icons.wb_sunny, 'Schedule'),
+                  _buildNavItem(context, 2, Icons.edit_note_outlined, Icons.edit_note, 'Customize'),
+                  _buildNavItem(context, 3, Icons.settings_outlined, Icons.settings, 'Settings'),
+                ],
+              ),
+            ),
           ),
         ),
       ),

@@ -135,6 +135,45 @@ class ProfileView extends GetView<ProfileController> {
                   child: _ThemePicker(),
                 ),
                 const SizedBox(height: 16),
+                _SectionCard(
+                  title: 'Backup & Restore',
+                  child: Column(
+                    children: [
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: const Icon(Icons.copy_all_rounded),
+                        title: const Text('Export to Clipboard'),
+                        subtitle: const Text('Copy offline app data to clipboard'),
+                        onTap: controller.copyBackupToClipboard,
+                      ),
+                      const Divider(height: 8),
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: const Icon(Icons.download_rounded),
+                        title: const Text('Export to File (Download)'),
+                        subtitle: const Text('Save backup as .json file on your phone'),
+                        onTap: controller.exportBackupToFile,
+                      ),
+                      const Divider(height: 8),
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: const Icon(Icons.paste_rounded),
+                        title: const Text('Import from Clipboard'),
+                        subtitle: const Text('Restore database from clipboard text'),
+                        onTap: controller.restoreBackupFromClipboard,
+                      ),
+                      const Divider(height: 8),
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: const Icon(Icons.upload_file_rounded),
+                        title: const Text('Import from File'),
+                        subtitle: const Text('Select a remindly_backup.json file from storage'),
+                        onTap: controller.importBackupFromFile,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
                 Obx(
                   () => _SectionCard(
                     title: null,

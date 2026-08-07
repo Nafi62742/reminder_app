@@ -99,4 +99,57 @@ class StorageService extends GetxService {
   Future<void> setSelectedThemeId(String id) {
     return _prefs.setString(StorageKeys.selectedThemeId, id);
   }
+
+  Map<String, dynamic> exportBackup() {
+    return {
+      StorageKeys.userName: _prefs.getString(StorageKeys.userName),
+      StorageKeys.userEmail: _prefs.getString(StorageKeys.userEmail),
+      StorageKeys.userWeightKg: _prefs.getDouble(StorageKeys.userWeightKg),
+      StorageKeys.userHeightCm: _prefs.getDouble(StorageKeys.userHeightCm),
+      StorageKeys.reminders: _prefs.getString(StorageKeys.reminders),
+      StorageKeys.nextReminderId: _prefs.getInt(StorageKeys.nextReminderId),
+      StorageKeys.scheduleItems: _prefs.getString(StorageKeys.scheduleItems),
+      StorageKeys.nextScheduleItemId: _prefs.getInt(StorageKeys.nextScheduleItemId),
+      StorageKeys.scheduleCompletions: _prefs.getString(StorageKeys.scheduleCompletions),
+      StorageKeys.selectedThemeId: _prefs.getString(StorageKeys.selectedThemeId),
+    };
+  }
+
+  Future<bool> importBackup(Map<String, dynamic> data) async {
+    try {
+      if (data.containsKey(StorageKeys.userName) && data[StorageKeys.userName] != null) {
+        await _prefs.setString(StorageKeys.userName, data[StorageKeys.userName] as String);
+      }
+      if (data.containsKey(StorageKeys.userEmail) && data[StorageKeys.userEmail] != null) {
+        await _prefs.setString(StorageKeys.userEmail, data[StorageKeys.userEmail] as String);
+      }
+      if (data.containsKey(StorageKeys.userWeightKg) && data[StorageKeys.userWeightKg] != null) {
+        await _prefs.setDouble(StorageKeys.userWeightKg, (data[StorageKeys.userWeightKg] as num).toDouble());
+      }
+      if (data.containsKey(StorageKeys.userHeightCm) && data[StorageKeys.userHeightCm] != null) {
+        await _prefs.setDouble(StorageKeys.userHeightCm, (data[StorageKeys.userHeightCm] as num).toDouble());
+      }
+      if (data.containsKey(StorageKeys.reminders) && data[StorageKeys.reminders] != null) {
+        await _prefs.setString(StorageKeys.reminders, data[StorageKeys.reminders] as String);
+      }
+      if (data.containsKey(StorageKeys.nextReminderId) && data[StorageKeys.nextReminderId] != null) {
+        await _prefs.setInt(StorageKeys.nextReminderId, data[StorageKeys.nextReminderId] as int);
+      }
+      if (data.containsKey(StorageKeys.scheduleItems) && data[StorageKeys.scheduleItems] != null) {
+        await _prefs.setString(StorageKeys.scheduleItems, data[StorageKeys.scheduleItems] as String);
+      }
+      if (data.containsKey(StorageKeys.nextScheduleItemId) && data[StorageKeys.nextScheduleItemId] != null) {
+        await _prefs.setInt(StorageKeys.nextScheduleItemId, data[StorageKeys.nextScheduleItemId] as int);
+      }
+      if (data.containsKey(StorageKeys.scheduleCompletions) && data[StorageKeys.scheduleCompletions] != null) {
+        await _prefs.setString(StorageKeys.scheduleCompletions, data[StorageKeys.scheduleCompletions] as String);
+      }
+      if (data.containsKey(StorageKeys.selectedThemeId) && data[StorageKeys.selectedThemeId] != null) {
+        await _prefs.setString(StorageKeys.selectedThemeId, data[StorageKeys.selectedThemeId] as String);
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }

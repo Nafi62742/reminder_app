@@ -13,9 +13,8 @@ class Assets {
 class $AssetsIconGen {
   const $AssetsIconGen();
 
-  final AssetGenImage appLogoRemovebgPreview =
-      const AssetGenImage('assets/icon/app_icon.png');
-  final AssetGenImage icon = const AssetGenImage('assets/icon/app_icon.png');
+  final AssetGenImage appIcon = const AssetGenImage('assets/icon/app_icon.png');
+  final AssetGenImage icon = const AssetGenImage('assets/icon/icon.png');
 }
 
 class AssetGenImage {

@@ -89,11 +89,11 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.xorgeek" "\0"
+            VALUE "CompanyName", "com.remindly" "\0"
             VALUE "FileDescription", "reminder_app" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "reminder_app" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 com.xorgeek. All rights reserved." "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 com.remindly. All rights reserved." "\0"
             VALUE "OriginalFilename", "reminder_app.exe" "\0"
             VALUE "ProductName", "reminder_app" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
