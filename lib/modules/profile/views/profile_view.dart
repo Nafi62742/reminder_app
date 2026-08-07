@@ -22,11 +22,80 @@ class ProfileView extends GetView<ProfileController> {
             child: ListView(
               padding: EdgeInsets.only(
                 top: topPadding + 8,
-                bottom: 110,
+                bottom: 24,
                 left: 16,
                 right: 16,
               ),
               children: [
+                ValueListenableBuilder<TextEditingValue>(
+                  valueListenable: controller.nameController,
+                  builder: (context, nameValue, child) {
+                    return ValueListenableBuilder<TextEditingValue>(
+                      valueListenable: controller.emailController,
+                      builder: (context, emailValue, child) {
+                        final name = nameValue.text;
+                        final email = emailValue.text;
+                        final initial = name.isNotEmpty ? name[0].toUpperCase() : '?';
+                        final colorScheme = theme.colorScheme;
+                        
+                        return Card(
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(16),
+                            onTap: () => Get.toNamed('/profile/settings'),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 28,
+                                    backgroundColor: colorScheme.primary.withValues(alpha: 0.12),
+                                    child: Text(
+                                      initial,
+                                      style: TextStyle(
+                                        color: colorScheme.primary,
+                                        fontWeight: FontWeight.w800,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          name.isNotEmpty ? name : 'Anonymous User',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: colorScheme.onSurface,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          email.isNotEmpty ? email : 'Tap to edit profile details',
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            color: colorScheme.onSurfaceVariant,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.chevron_right_rounded,
+                                    color: colorScheme.onSurfaceVariant,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+                const SizedBox(height: 16),
                 _SectionCard(
                   title: 'Your Progress',
                   child: Obx(
@@ -37,6 +106,7 @@ class ProfileView extends GetView<ProfileController> {
                             label: 'Today',
                             value:
                                 '${controller.todayCount.value}/${controller.totalItems.value}',
+                            icon: Icons.today_rounded,
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -44,6 +114,7 @@ class ProfileView extends GetView<ProfileController> {
                           child: _StatCard(
                             label: 'This Week',
                             value: '${controller.weekCount.value}',
+                            icon: Icons.date_range_rounded,
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -51,6 +122,7 @@ class ProfileView extends GetView<ProfileController> {
                           child: _StatCard(
                             label: 'This Month',
                             value: '${controller.monthCount.value}',
+                            icon: Icons.trending_up_rounded,
                           ),
                         ),
                       ],
@@ -61,65 +133,6 @@ class ProfileView extends GetView<ProfileController> {
                 const _SectionCard(
                   title: 'Theme',
                   child: _ThemePicker(),
-                ),
-                const SizedBox(height: 16),
-                _SectionCard(
-                  title: 'Your Profile',
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      TextField(
-                        controller: controller.nameController,
-                        textCapitalization: TextCapitalization.words,
-                        decoration: const InputDecoration(
-                          labelText: 'Name',
-                          prefixIcon: Icon(Icons.person_outline),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      TextField(
-                        controller: controller.emailController,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: const InputDecoration(
-                          labelText: 'Email',
-                          prefixIcon: Icon(Icons.email_outlined),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              controller: controller.weightController,
-                              keyboardType: const TextInputType.numberWithOptions(
-                                  decimal: true),
-                              decoration: const InputDecoration(
-                                labelText: 'Weight (kg)',
-                                prefixIcon: Icon(Icons.monitor_weight_outlined),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: TextField(
-                              controller: controller.heightController,
-                              keyboardType: const TextInputType.numberWithOptions(
-                                  decimal: true),
-                              decoration: const InputDecoration(
-                                labelText: 'Height (cm)',
-                                prefixIcon: Icon(Icons.height),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: controller.saveProfile,
-                        child: const Text('Save Profile'),
-                      ),
-                    ],
-                  ),
                 ),
                 const SizedBox(height: 16),
                 Obx(
@@ -137,33 +150,13 @@ class ProfileView extends GetView<ProfileController> {
               ],
             ),
           ),
-          Positioned(
+          const Positioned(
             top: 0,
             left: 0,
             right: 0,
-            child: ValueListenableBuilder<TextEditingValue>(
-              valueListenable: controller.nameController,
-              builder: (context, value, child) {
-                final name = value.text;
-                final initial = name.isNotEmpty ? name[0].toUpperCase() : '?';
-
-                return TabHeader(
-                  title: 'Profile & Progress',
-                  subtitle: name.isEmpty ? null : name,
-                  trailing: CircleAvatar(
-                    radius: 22,
-                    backgroundColor: theme.colorScheme.primary.withValues(alpha: 0.15),
-                    child: Text(
-                      initial,
-                      style: TextStyle(
-                        color: theme.colorScheme.primary,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                );
-              },
+            child: TabHeader(
+              title: 'Settings',
+              subtitle: 'Preferences & progress activity',
             ),
           ),
         ],
@@ -199,34 +192,69 @@ class _SectionCard extends StatelessWidget {
 }
 
 class _StatCard extends StatelessWidget {
-  const _StatCard({required this.label, required this.value});
+  const _StatCard({
+    required this.label,
+    required this.value,
+    required this.icon,
+  });
 
   final String label;
   final String value;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = colorScheme.brightness == Brightness.dark;
+
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: colorScheme.primaryContainer,
-        borderRadius: BorderRadius.circular(12),
+        color: isDark 
+            ? colorScheme.surfaceContainerHigh.withValues(alpha: 0.8) 
+            : colorScheme.primaryContainer.withValues(alpha: 0.22),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isDark 
+              ? Colors.white.withValues(alpha: 0.05) 
+              : colorScheme.primary.withValues(alpha: 0.08),
+          width: 1,
+        ),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: colorScheme.onPrimaryContainer,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w900,
+                    color: colorScheme.primary,
+                    letterSpacing: -0.5,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              Icon(
+                icon,
+                size: 16,
+                color: colorScheme.primary.withValues(alpha: 0.7),
+              ),
+            ],
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 8),
           Text(
             label,
-            style: TextStyle(fontSize: 12, color: colorScheme.onPrimaryContainer),
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: colorScheme.onSurfaceVariant,
+            ),
           ),
         ],
       ),

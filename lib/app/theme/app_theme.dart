@@ -69,6 +69,37 @@ class AppTheme {
       useMaterial3: true,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: colorScheme.surface,
+      textTheme: TextTheme(
+        headlineLarge: TextStyle(
+          fontWeight: FontWeight.w800,
+          color: isDark ? Colors.white : const Color(0xFF111827),
+          letterSpacing: -0.5,
+        ),
+        headlineMedium: TextStyle(
+          fontWeight: FontWeight.w700,
+          color: isDark ? Colors.white : const Color(0xFF111827),
+          letterSpacing: -0.5,
+        ),
+        titleLarge: TextStyle(
+          fontWeight: FontWeight.w700,
+          color: isDark ? const Color(0xFFF3F4F6) : const Color(0xFF1F2937),
+          letterSpacing: -0.3,
+        ),
+        titleMedium: TextStyle(
+          fontWeight: FontWeight.w600,
+          color: isDark ? const Color(0xFFE5E7EB) : const Color(0xFF374151),
+        ),
+        bodyLarge: TextStyle(
+          color: isDark ? const Color(0xFFD1D5DB) : const Color(0xFF4B5563),
+        ),
+        bodyMedium: TextStyle(
+          color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280),
+        ),
+        labelLarge: TextStyle(
+          fontWeight: FontWeight.w600,
+          color: isDark ? const Color(0xFFF3F4F6) : const Color(0xFF374151),
+        ),
+      ),
       appBarTheme: AppBarTheme(
         backgroundColor: colorScheme.surface,
         foregroundColor: colorScheme.onSurface,

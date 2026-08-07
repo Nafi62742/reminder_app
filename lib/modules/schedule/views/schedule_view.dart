@@ -59,20 +59,41 @@ class ScheduleView extends GetView<ScheduleController> {
                 return ListView.builder(
                   padding: EdgeInsets.only(
                     top: topPadding + 8,
-                    bottom: 110,
+                    bottom: 24,
                   ),
                   itemCount: items.length,
                   itemBuilder: (context, index) {
                     final item = items[index];
                     final done = controller.isCompleted(item.id);
-                    return Card(
+                    final isDark = colorScheme.brightness == Brightness.dark;
+
+                    return Container(
                       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: done
+                            ? colorScheme.surfaceContainer.withValues(alpha: 0.6)
+                            : colorScheme.surfaceContainerHigh,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border(
+                          left: BorderSide(
+                            color: done ? colorScheme.outlineVariant : colorScheme.primary,
+                            width: 4,
+                          ),
+                        ),
+                        boxShadow: [
+                          if (!done)
+                            BoxShadow(
+                              color: colorScheme.shadow.withValues(alpha: isDark ? 0.08 : 0.03),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                        ],
+                      ),
                       child: InkWell(
                         borderRadius: BorderRadius.circular(16),
                         onTap: () => controller.toggle(item),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 6),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                           child: Row(
                             children: [
                               Checkbox(
@@ -80,26 +101,25 @@ class ScheduleView extends GetView<ScheduleController> {
                                 onChanged: (_) => controller.toggle(item),
                                 shape: const CircleBorder(),
                               ),
+                              const SizedBox(width: 4),
                               Container(
-                                width: 36,
-                                height: 36,
-                                margin: const EdgeInsets.only(right: 12),
+                                width: 38,
+                                height: 38,
                                 decoration: BoxDecoration(
                                   color: done
                                       ? colorScheme.surfaceContainerHighest
-                                      : colorScheme.primaryContainer,
+                                      : colorScheme.primaryContainer.withValues(alpha: 0.7),
                                   shape: BoxShape.circle,
                                 ),
                                 child: Icon(
-                                  item.timeMinutes != null
-                                      ? Icons.access_time
-                                      : Icons.check_circle_outline,
+                                  _getTimeIcon(item.timeMinutes),
                                   size: 18,
                                   color: done
                                       ? colorScheme.onSurfaceVariant
                                       : colorScheme.onPrimaryContainer,
                                 ),
                               ),
+                              const SizedBox(width: 14),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,24 +128,25 @@ class ScheduleView extends GetView<ScheduleController> {
                                     Text(
                                       item.title,
                                       style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        decoration: done
-                                            ? TextDecoration.lineThrough
-                                            : null,
+                                        fontSize: 15,
+                                        fontWeight: done ? FontWeight.w500 : FontWeight.w700,
+                                        decoration: done ? TextDecoration.lineThrough : null,
                                         color: done
-                                            ? colorScheme.onSurfaceVariant
+                                            ? colorScheme.onSurfaceVariant.withValues(alpha: 0.7)
                                             : colorScheme.onSurface,
                                       ),
                                     ),
-                                    if (item.timeMinutes != null)
+                                    if (item.timeMinutes != null) ...[
+                                      const SizedBox(height: 2),
                                       Text(
-                                        ScheduleTimeFormatter.formatMinutes(
-                                            item.timeMinutes!),
+                                        ScheduleTimeFormatter.formatMinutes(item.timeMinutes!),
                                         style: TextStyle(
                                           fontSize: 12,
+                                          fontWeight: FontWeight.w600,
                                           color: colorScheme.onSurfaceVariant,
                                         ),
                                       ),
+                                    ],
                                   ],
                                 ),
                               ),
@@ -155,15 +176,15 @@ class ScheduleView extends GetView<ScheduleController> {
                             child: LinearProgressIndicator(
                               value: progress,
                               minHeight: 8,
-                              backgroundColor: colorScheme.primaryContainer.withValues(alpha: 0.3),
-                              valueColor: AlwaysStoppedAnimation(colorScheme.primary),
+                              backgroundColor: Colors.white.withValues(alpha: 0.25),
+                              valueColor: const AlwaysStoppedAnimation(Colors.white),
                             ),
                           ),
                           const SizedBox(height: 6),
                           Text(
                             '$done of $total completed',
                             style: TextStyle(
-                              color: colorScheme.onSurfaceVariant,
+                              color: Colors.white.withValues(alpha: 0.85),
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
                             ),
@@ -176,5 +197,13 @@ class ScheduleView extends GetView<ScheduleController> {
         );
       }),
     );
+  }
+
+  IconData _getTimeIcon(int? minutes) {
+    if (minutes == null) return Icons.checklist_rtl_rounded;
+    final hour = minutes ~/ 60;
+    if (hour < 12) return Icons.wb_twilight_rounded;
+    if (hour < 17) return Icons.wb_sunny_rounded;
+    return Icons.nightlight_round;
   }
 }

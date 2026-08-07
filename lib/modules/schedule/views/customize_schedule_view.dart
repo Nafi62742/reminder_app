@@ -32,7 +32,7 @@ class CustomizeScheduleView extends GetView<CustomizeScheduleController> {
               return ReorderableListView.builder(
                 padding: EdgeInsets.only(
                   top: topPadding + 8,
-                  bottom: 110,
+                  bottom: 24,
                 ),
                 itemCount: items.length,
                 onReorderItem: controller.reorder,
@@ -124,11 +124,40 @@ class CustomizeScheduleView extends GetView<CustomizeScheduleController> {
           ),
         ],
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 80),
+      floatingActionButton: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Theme.of(context).colorScheme.primary,
+              Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
+            ],
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.35),
+              blurRadius: 16,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
         child: FloatingActionButton(
           onPressed: () => _showItemDialog(context),
-          child: const Icon(Icons.add),
+          elevation: 0,
+          hoverElevation: 0,
+          focusElevation: 0,
+          highlightElevation: 0,
+          backgroundColor: Colors.transparent,
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
+          child: const Icon(
+            Icons.add_rounded,
+            size: 28,
+          ),
         ),
       ),
     );

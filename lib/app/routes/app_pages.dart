@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 
 import '../../modules/onboarding/bindings/onboarding_binding.dart';
 import '../../modules/onboarding/views/onboarding_view.dart';
+import '../../modules/profile/views/profile_settings_view.dart';
 import '../../modules/reminders/bindings/reminder_form_binding.dart';
 import '../../modules/reminders/bindings/reminder_history_binding.dart';
 import '../../modules/reminders/views/reminder_form_view.dart';
@@ -38,6 +39,10 @@ class AppPages {
       name: AppRoutes.reminderHistory,
       page: () => const ReminderHistoryView(),
       binding: ReminderHistoryBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.profileSettings,
+      page: () => const ProfileSettingsView(),
     ),
   ];
 }

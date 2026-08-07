@@ -38,70 +38,130 @@ class _SplashViewState extends State<SplashView> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = colorScheme.brightness == Brightness.dark;
+
+    final primaryHsl = HSLColor.fromColor(colorScheme.primary);
+    final hue = primaryHsl.hue;
+
+    Color firstColor;
+    Color secondColor;
+
+    if (isDark) {
+      if (hue >= 190 && hue <= 250) {
+        // Midnight Theme (Blue/Purple dark)
+        firstColor = const Color(0xFF162A45);
+        secondColor = colorScheme.primary;
+      } else if (hue >= 80 && hue <= 140) {
+        // Forest Theme (Dark mode green)
+        firstColor = const Color(0xFF14331A);
+        secondColor = colorScheme.primary;
+      } else if (hue <= 35 || hue >= 340) {
+        // Sunset Theme (Dark mode orange)
+        firstColor = const Color(0xFF5D1105);
+        secondColor = colorScheme.primary;
+      } else {
+        firstColor = colorScheme.primary;
+        secondColor = primaryHsl.withLightness((primaryHsl.lightness + 0.15).clamp(0.0, 1.0)).toColor();
+      }
+    } else {
+      if (hue >= 190 && hue <= 250) {
+        // Ocean Theme (Blue light)
+        firstColor = const Color(0xFF0D47A1);
+        secondColor = colorScheme.primary;
+      } else if (hue >= 80 && hue <= 140) {
+        // Forest Theme (Green light)
+        firstColor = const Color(0xFF1B5E20);
+        secondColor = colorScheme.primary;
+      } else if (hue <= 35 || hue >= 340) {
+        // Sunset Theme (Orange/Red light)
+        firstColor = const Color(0xFFBF360C);
+        secondColor = colorScheme.primary;
+      } else {
+        firstColor = colorScheme.primary;
+        secondColor = primaryHsl.withLightness((primaryHsl.lightness + 0.15).clamp(0.0, 1.0)).toColor();
+      }
+    }
+
     return Scaffold(
-      backgroundColor: colorScheme.surface,
-      body: Center(
-        child: AnimatedScale(
-          scale: _scale,
-          duration: const Duration(milliseconds: 800),
-          curve: Curves.easeOutBack,
-          child: AnimatedOpacity(
-            opacity: _opacity,
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              firstColor,
+              secondColor,
+            ],
+          ),
+        ),
+        child: Center(
+          child: AnimatedScale(
+            scale: _scale,
             duration: const Duration(milliseconds: 800),
-            curve: Curves.easeInOut,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 140,
-                  height: 140,
-                  decoration: BoxDecoration(
-                    color: colorScheme.surfaceContainerHigh,
-                    borderRadius: BorderRadius.circular(32),
-                    boxShadow: [
-                      BoxShadow(
-                        color: colorScheme.shadow.withValues(alpha: 0.08),
-                        blurRadius: 24,
-                        offset: const Offset(0, 8),
+            curve: Curves.easeOutBack,
+            child: AnimatedOpacity(
+              opacity: _opacity,
+              duration: const Duration(milliseconds: 800),
+              curve: Curves.easeInOut,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 160,
+                    height: 160,
+                    clipBehavior: Clip.antiAlias,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(44),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.25),
+                        width: 1.5,
                       ),
-                    ],
-                  ),
-                  padding: const EdgeInsets.all(24),
-                  child: Image.asset(
-                    'assets/app_logo.png',
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) => Image.asset(
-                      'assets/icon/icon.png',
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.2),
+                          blurRadius: 32,
+                          offset: const Offset(0, 12),
+                        ),
+                      ],
+                    ),
+                    padding: EdgeInsets.zero,
+                    child: Image.asset(
+                      'assets/icon/app_icon.png',
                       fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) => Icon(
+                      errorBuilder: (context, error, stackTrace) => const Icon(
                         Icons.notifications_active_rounded,
-                        size: 64,
-                        color: colorScheme.primary,
+                        size: 160,
+                        color: Colors.white,
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  AppConstants.appName,
-                  style: TextStyle(
-                    color: colorScheme.onSurface,
-                    fontSize: 32,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.5,
+                  const SizedBox(height: 28),
+                  const Text(
+                    AppConstants.appName,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 34,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0.8,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Your daily reminder companion',
-                  style: TextStyle(
-                    color: colorScheme.onSurfaceVariant,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
+                  const SizedBox(height: 8),
+                  Text(
+                    'Your daily reminder companion',
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.80),
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.2,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

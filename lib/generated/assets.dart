@@ -4,6 +4,18 @@ import 'package:flutter/widgets.dart';
 
 class Assets {
   Assets._();
+
+  static const AssetGenImage appBanner = AssetGenImage('assets/app_banner.png');
+  static const AssetGenImage appLogo = AssetGenImage('assets/app_logo.png');
+  static const $AssetsIconGen icon = $AssetsIconGen();
+}
+
+class $AssetsIconGen {
+  const $AssetsIconGen();
+
+  final AssetGenImage appLogoRemovebgPreview =
+      const AssetGenImage('assets/icon/app_icon.png');
+  final AssetGenImage icon = const AssetGenImage('assets/icon/app_icon.png');
 }
 
 class AssetGenImage {

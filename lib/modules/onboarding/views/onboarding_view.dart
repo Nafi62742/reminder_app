@@ -18,33 +18,15 @@ class OnboardingView extends GetView<OnboardingController> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Center(
-                  child: Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surfaceContainerHigh,
-                      borderRadius: BorderRadius.circular(24),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.05),
-                          blurRadius: 16,
-                          offset: const Offset(0, 6),
-                        ),
-                      ],
-                    ),
-                    padding: const EdgeInsets.all(16),
-                    child: Image.asset(
-                      'assets/app_logo.png',
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) => Image.asset(
-                        'assets/icon/icon.png',
-                        fit: BoxFit.contain,
-                        errorBuilder: (context, error, stackTrace) => Icon(
-                          Icons.notifications_active_rounded,
-                          size: 48,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
+                  child: Image.asset(
+                    'assets/icon/app_icon.png',
+                    width: 200,
+                    height: 200,
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) => Icon(
+                      Icons.notifications_active_rounded,
+                      size: 200,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
                 ),

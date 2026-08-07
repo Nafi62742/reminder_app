@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../profile/controllers/profile_controller.dart';
+import '../../reminders/controllers/reminders_controller.dart';
 import '../../schedule/controllers/schedule_controller.dart';
 
 /// Owns the bottom-nav tab index and the [PageView] that makes the tabs
@@ -30,6 +31,8 @@ class MainShellController extends GetxController {
   void onPageChanged(int index) {
     currentIndex.value = index;
     switch (index) {
+      case remindersTab:
+        Get.find<RemindersController>().loadMonthlyStats();
       case scheduleTab:
         Get.find<ScheduleController>().reload();
       case profileTab:
