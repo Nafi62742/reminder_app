@@ -8,12 +8,17 @@ import 'app/theme/app_theme_controller.dart';
 import 'core/constants/app_constants.dart';
 import 'core/services/notification_service.dart';
 import 'core/services/storage_service.dart';
+import 'data/repositories/reminder_repository.dart';
+import 'data/repositories/schedule_repository.dart';
 import 'modules/splash/views/splash_view.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final storageService = await Get.putAsync(() => StorageService().init());
+  Get.put(ReminderRepository(storageService));
+  Get.put(ScheduleRepository(storageService));
+
   await Get.putAsync(() => NotificationService().init());
   Get.put(AppThemeController(storageService));
 

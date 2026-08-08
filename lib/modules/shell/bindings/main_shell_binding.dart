@@ -19,8 +19,8 @@ class MainShellBinding extends Bindings {
     final storage = Get.find<StorageService>();
     final notifications = Get.find<NotificationService>();
 
-    final scheduleRepository = Get.put(ScheduleRepository(storage));
-    final reminderRepository = Get.put(ReminderRepository(storage));
+    final scheduleRepository = Get.find<ScheduleRepository>();
+    final reminderRepository = Get.find<ReminderRepository>();
     
     Get.put(RemindersController(reminderRepository, notifications, storage, scheduleRepository));
     Get.put(ScheduleController(scheduleRepository));

@@ -9,6 +9,8 @@ import '../../modules/reminders/views/reminder_form_view.dart';
 import '../../modules/reminders/views/reminder_history_view.dart';
 import '../../modules/shell/bindings/main_shell_binding.dart';
 import '../../modules/shell/views/main_shell_view.dart';
+import '../../modules/alarm/bindings/alarm_ringing_binding.dart';
+import '../../modules/alarm/views/alarm_ringing_view.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -43,6 +45,11 @@ class AppPages {
     GetPage(
       name: AppRoutes.profileSettings,
       page: () => const ProfileSettingsView(),
+    ),
+    GetPage(
+      name: AppRoutes.alarmRinging,
+      page: () => const AlarmRingingView(),
+      binding: AlarmRingingBinding(),
     ),
   ];
 }
