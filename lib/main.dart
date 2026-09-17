@@ -10,6 +10,7 @@ import 'core/services/notification_service.dart';
 import 'core/services/storage_service.dart';
 import 'data/repositories/reminder_repository.dart';
 import 'data/repositories/schedule_repository.dart';
+import 'data/repositories/workout_repository.dart';
 import 'modules/shell/bindings/main_shell_binding.dart';
 import 'modules/splash/views/splash_view.dart';
 
@@ -19,6 +20,7 @@ Future<void> main() async {
   final storageService = await Get.putAsync(() => StorageService().init());
   Get.put(ReminderRepository(storageService));
   Get.put(ScheduleRepository(storageService));
+  Get.put(WorkoutRepository(storageService));
 
   await Get.putAsync(() => NotificationService().init());
   Get.put(AppThemeController(storageService));

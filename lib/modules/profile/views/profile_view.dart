@@ -7,6 +7,7 @@ import '../../../app/theme/app_theme_controller.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../widgets/tab_header.dart';
 import '../../schedule/controllers/schedule_controller.dart';
+import '../../workout/controllers/workout_controller.dart';
 import '../controllers/profile_controller.dart';
 
 class ProfileView extends GetView<ProfileController> {
@@ -154,6 +155,28 @@ class ProfileView extends GetView<ProfileController> {
                     onTap: () => Get.toNamed(AppRoutes.customizeSchedule)?.then((_) {
                       if (Get.isRegistered<ScheduleController>()) {
                         Get.find<ScheduleController>().reload();
+                      }
+                    }),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _SectionCard(
+                  title: 'Workouts',
+                  child: ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: CircleAvatar(
+                      backgroundColor: Colors.orange.withValues(alpha: 0.12),
+                      child: const Icon(Icons.fitness_center_rounded, color: Colors.orange),
+                    ),
+                    title: const Text(
+                      'Customize Workouts',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    subtitle: const Text('Add, edit, or customize reps & exercises'),
+                    trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
+                    onTap: () => Get.toNamed(AppRoutes.customizeWorkout)?.then((_) {
+                      if (Get.isRegistered<WorkoutController>()) {
+                        Get.find<WorkoutController>().reload();
                       }
                     }),
                   ),

@@ -94,6 +94,47 @@ class StorageService extends GetxService {
     return _prefs.setString(StorageKeys.scheduleCompletions, jsonEncode(all));
   }
 
+  List<Map<String, dynamic>> getWorkoutItems() {
+    final raw = _prefs.getString(StorageKeys.workoutItems);
+    if (raw == null || raw.isEmpty) return [];
+    final decoded = jsonDecode(raw) as List<dynamic>;
+    return decoded.cast<Map<String, dynamic>>();
+  }
+
+  Future<void> saveWorkoutItems(List<Map<String, dynamic>> items) {
+    return _prefs.setString(StorageKeys.workoutItems, jsonEncode(items));
+  }
+
+  int nextWorkoutItemId() {
+    var next = _prefs.getInt(StorageKeys.nextWorkoutItemId) ?? 0;
+    for (final item in getWorkoutItems()) {
+      final id = item['id'] as int? ?? 0;
+      if (id > next) next = id;
+    }
+    next += 1;
+    _prefs.setInt(StorageKeys.nextWorkoutItemId, next);
+    return next;
+  }
+
+  Map<String, List<int>> _allWorkoutCompletions() {
+    final raw = _prefs.getString(StorageKeys.workoutCompletions);
+    if (raw == null || raw.isEmpty) return {};
+    final decoded = jsonDecode(raw) as Map<String, dynamic>;
+    return decoded.map(
+      (key, value) => MapEntry(key, (value as List<dynamic>).cast<int>()),
+    );
+  }
+
+  Set<int> getWorkoutCompletions(String dateKey) {
+    return (_allWorkoutCompletions()[dateKey] ?? const <int>[]).toSet();
+  }
+
+  Future<void> saveWorkoutCompletions(String dateKey, Set<int> itemIds) {
+    final all = _allWorkoutCompletions();
+    all[dateKey] = itemIds.toList();
+    return _prefs.setString(StorageKeys.workoutCompletions, jsonEncode(all));
+  }
+
   String? get selectedThemeId => _prefs.getString(StorageKeys.selectedThemeId);
 
   Future<void> setSelectedThemeId(String id) {
@@ -111,6 +152,9 @@ class StorageService extends GetxService {
       StorageKeys.scheduleItems: _prefs.getString(StorageKeys.scheduleItems),
       StorageKeys.nextScheduleItemId: _prefs.getInt(StorageKeys.nextScheduleItemId),
       StorageKeys.scheduleCompletions: _prefs.getString(StorageKeys.scheduleCompletions),
+      StorageKeys.workoutItems: _prefs.getString(StorageKeys.workoutItems),
+      StorageKeys.nextWorkoutItemId: _prefs.getInt(StorageKeys.nextWorkoutItemId),
+      StorageKeys.workoutCompletions: _prefs.getString(StorageKeys.workoutCompletions),
       StorageKeys.selectedThemeId: _prefs.getString(StorageKeys.selectedThemeId),
     };
   }
@@ -143,6 +187,15 @@ class StorageService extends GetxService {
       }
       if (data.containsKey(StorageKeys.scheduleCompletions) && data[StorageKeys.scheduleCompletions] != null) {
         await _prefs.setString(StorageKeys.scheduleCompletions, data[StorageKeys.scheduleCompletions] as String);
+      }
+      if (data.containsKey(StorageKeys.workoutItems) && data[StorageKeys.workoutItems] != null) {
+        await _prefs.setString(StorageKeys.workoutItems, data[StorageKeys.workoutItems] as String);
+      }
+      if (data.containsKey(StorageKeys.nextWorkoutItemId) && data[StorageKeys.nextWorkoutItemId] != null) {
+        await _prefs.setInt(StorageKeys.nextWorkoutItemId, data[StorageKeys.nextWorkoutItemId] as int);
+      }
+      if (data.containsKey(StorageKeys.workoutCompletions) && data[StorageKeys.workoutCompletions] != null) {
+        await _prefs.setString(StorageKeys.workoutCompletions, data[StorageKeys.workoutCompletions] as String);
       }
       if (data.containsKey(StorageKeys.selectedThemeId) && data[StorageKeys.selectedThemeId] != null) {
         await _prefs.setString(StorageKeys.selectedThemeId, data[StorageKeys.selectedThemeId] as String);

@@ -17,21 +17,22 @@ lib/
 ├── main.dart                 # bootstraps services, picks the initial route
 ├── app/
 │   ├── routes/                # route names + GetPage table
-│   └── theme/                 # blue Material 3 theme (light + dark)
+│   └── theme/                 # multi-theme support (Material 3 light + dark)
 ├── core/
 │   ├── constants/              # SharedPreferences key names, app name
 │   ├── services/                # StorageService, NotificationService
 │   └── utils/                   # date/time + schedule-time formatting
 ├── data/
-│   ├── models/                  # ReminderModel, ScheduleItemModel
-│   └── repositories/             # ReminderRepository, ScheduleRepository
+│   ├── models/                  # ReminderModel, ScheduleItemModel, WorkoutItemModel
+│   └── repositories/             # ReminderRepository, ScheduleRepository, WorkoutRepository
 ├── modules/
 │   ├── onboarding/                 # first-run name capture
 │   ├── shell/                      # bottom-nav shell hosting the 4 tabs
-│   ├── reminders/                  # tab 1 — list, add/edit form, history
-│   ├── schedule/                    # tab 2 (checklist) + tab 3 (customize)
-│   └── profile/                      # tab 4 — stats + profile fields
-└── widgets/                            # shared widgets (ReminderTile)
+│   ├── reminders/                  # tab 0 — list, add/edit form, history
+│   ├── schedule/                    # tab 1 — daily routine checklist
+│   ├── workout/                     # tab 2 — routine cards, presets, detail sheet, customizer
+│   └── profile/                      # tab 3 — stats, themes, backup/restore, customize links
+└── widgets/                            # shared widgets (TabHeader, ReminderTile)
 ```
 
 ### `app/` — wiring

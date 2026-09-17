@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../profile/views/profile_view.dart';
 import '../../reminders/views/reminders_view.dart';
 import '../../schedule/views/schedule_view.dart';
+import '../../workout/views/workout_view.dart';
 import '../bindings/main_shell_binding.dart';
 import '../controllers/main_shell_controller.dart';
 
@@ -27,6 +28,7 @@ class MainShellView extends GetView<MainShellController> {
         children: const [
           RemindersView(),
           ScheduleView(),
+          WorkoutView(),
           ProfileView(),
         ],
       ),
@@ -59,7 +61,8 @@ class MainShellView extends GetView<MainShellController> {
                 children: [
                   _buildNavItem(context, 0, Icons.checklist_outlined, Icons.checklist, 'Reminders'),
                   _buildNavItem(context, 1, Icons.wb_sunny_outlined, Icons.wb_sunny, 'Schedule'),
-                  _buildNavItem(context, 2, Icons.settings_outlined, Icons.settings, 'Settings'),
+                  _buildNavItem(context, 2, Icons.fitness_center_outlined, Icons.fitness_center, 'Workout'),
+                  _buildNavItem(context, 3, Icons.settings_outlined, Icons.settings, 'Settings'),
                 ],
               ),
             ),
