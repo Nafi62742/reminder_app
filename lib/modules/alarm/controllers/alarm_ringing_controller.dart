@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:get/get.dart';
 
+import '../../../app/routes/app_routes.dart';
 import '../../../core/services/notification_service.dart';
 import '../../../data/models/reminder_model.dart';
 import '../../../data/repositories/reminder_repository.dart';
+import '../../reminders/controllers/reminders_controller.dart';
 
 class AlarmRingingController extends GetxController {
   AlarmRingingController(this._repository, this._notifications);
@@ -68,9 +70,17 @@ class AlarmRingingController extends GetxController {
       // 2. Mark reminder as completed in local storage
       final updated = current.copyWith(isCompleted: true);
       await _repository.update(updated);
+      // 3. Refresh controller to update UI
+      if (Get.isRegistered<RemindersController>()) {
+        Get.find<RemindersController>().onInit();
+      }
     }
-    // Close the alarm screen
-    Get.back();
+    // Return to the reminders screen
+    if (Get.key.currentState?.canPop() == true) {
+      Get.back();
+    } else {
+      Get.offAllNamed(AppRoutes.main);
+    }
   }
 
   Future<void> snoozeAlarm() async {
@@ -81,6 +91,11 @@ class AlarmRingingController extends GetxController {
       // 2. Schedule snooze reminder (5 minutes from now)
       await _notifications.snoozeReminder(current);
     }
-    Get.back();
+    // Return to the reminders screen
+    if (Get.key.currentState?.canPop() == true) {
+      Get.back();
+    } else {
+      Get.offAllNamed(AppRoutes.main);
+    }
   }
 }

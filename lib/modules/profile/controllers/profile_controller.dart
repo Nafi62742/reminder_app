@@ -143,9 +143,11 @@ class ProfileController extends GetxController {
       await file.writeAsString(jsonStr);
 
       final xFile = XFile(file.path, mimeType: 'application/json');
-      await Share.shareXFiles(
-        [xFile],
-        text: 'RemindLy Offline Backup Data',
+      await SharePlus.instance.share(
+        ShareParams(
+          files: [xFile],
+          text: 'RemindLy Offline Backup Data',
+        ),
       );
       
       Get.snackbar(

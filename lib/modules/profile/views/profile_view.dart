@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../app/routes/app_routes.dart';
 import '../../../app/theme/app_theme.dart';
 import '../../../app/theme/app_theme_controller.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../widgets/tab_header.dart';
+import '../../schedule/controllers/schedule_controller.dart';
 import '../controllers/profile_controller.dart';
 
 class ProfileView extends GetView<ProfileController> {
@@ -136,41 +138,42 @@ class ProfileView extends GetView<ProfileController> {
                 ),
                 const SizedBox(height: 16),
                 _SectionCard(
-                  title: 'Backup & Restore',
-                  child: Column(
-                    children: [
-                      ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        leading: const Icon(Icons.copy_all_rounded),
-                        title: const Text('Export to Clipboard'),
-                        subtitle: const Text('Copy offline app data to clipboard'),
-                        onTap: controller.copyBackupToClipboard,
-                      ),
-                      const Divider(height: 8),
-                      ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        leading: const Icon(Icons.download_rounded),
-                        title: const Text('Export to File (Download)'),
-                        subtitle: const Text('Save backup as .json file on your phone'),
-                        onTap: controller.exportBackupToFile,
-                      ),
-                      const Divider(height: 8),
-                      ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        leading: const Icon(Icons.paste_rounded),
-                        title: const Text('Import from Clipboard'),
-                        subtitle: const Text('Restore database from clipboard text'),
-                        onTap: controller.restoreBackupFromClipboard,
-                      ),
-                      const Divider(height: 8),
-                      ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        leading: const Icon(Icons.upload_file_rounded),
-                        title: const Text('Import from File'),
-                        subtitle: const Text('Select a remindly_backup.json file from storage'),
-                        onTap: controller.importBackupFromFile,
-                      ),
-                    ],
+                  title: 'Daily Routine',
+                  child: ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: CircleAvatar(
+                      backgroundColor: theme.colorScheme.primary.withValues(alpha: 0.12),
+                      child: Icon(Icons.tune_rounded, color: theme.colorScheme.primary),
+                    ),
+                    title: const Text(
+                      'Customize Daily Routine',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    subtitle: const Text('Add, edit, or reorder routine checklist items'),
+                    trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
+                    onTap: () => Get.toNamed(AppRoutes.customizeSchedule)?.then((_) {
+                      if (Get.isRegistered<ScheduleController>()) {
+                        Get.find<ScheduleController>().reload();
+                      }
+                    }),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _SectionCard(
+                  title: 'Data & Storage',
+                  child: ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: CircleAvatar(
+                      backgroundColor: Colors.teal.withValues(alpha: 0.12),
+                      child: const Icon(Icons.backup_outlined, color: Colors.teal),
+                    ),
+                    title: const Text(
+                      'Backup & Restore',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    subtitle: const Text('Export offline data or restore from file / clipboard'),
+                    trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
+                    onTap: () => Get.toNamed(AppRoutes.backupRestore),
                   ),
                 ),
                 const SizedBox(height: 16),

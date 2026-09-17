@@ -23,14 +23,20 @@ class ReminderHistoryController extends GetxController {
 
   void _load() {
     final today = DateTimeFormatter.startOfDay(DateTime.now());
-    final past = _repository
+    final history = _repository
         .getAll()
         .where((r) =>
-            r.dateTime != null &&
-            DateTimeFormatter.startOfDay(r.dateTime!).isBefore(today))
+            r.isCompleted ||
+            (r.dateTime != null &&
+                DateTimeFormatter.startOfDay(r.dateTime!).isBefore(today)))
         .toList()
-      ..sort((a, b) => b.dateTime!.compareTo(a.dateTime!));
-    reminders.assignAll(past);
+      ..sort((a, b) {
+        if (a.dateTime == null && b.dateTime == null) return 0;
+        if (a.dateTime == null) return 1;
+        if (b.dateTime == null) return -1;
+        return b.dateTime!.compareTo(a.dateTime!);
+      });
+    reminders.assignAll(history);
   }
 
   Future<void> toggleComplete(ReminderModel reminder) async {
@@ -38,6 +44,8 @@ class ReminderHistoryController extends GetxController {
     await _repository.update(updated);
     if (updated.isCompleted) {
       await _notifications.cancelReminder(updated.id);
+    } else {
+      await _notifications.scheduleReminder(updated);
     }
     _load();
   }

@@ -17,8 +17,7 @@ class MainShellController extends GetxController {
 
   static const int remindersTab = 0;
   static const int scheduleTab = 1;
-  static const int customizeTab = 2;
-  static const int profileTab = 3;
+  static const int profileTab = 2;
 
   void changeTab(int index) {
     pageController.animateToPage(

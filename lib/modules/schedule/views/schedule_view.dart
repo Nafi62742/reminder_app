@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import '../../../app/routes/app_routes.dart';
 import '../../../core/utils/schedule_time_formatter.dart';
 import '../../../widgets/tab_header.dart';
 import '../controllers/schedule_controller.dart';
@@ -47,10 +48,16 @@ class ScheduleView extends GetView<ScheduleController> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'Add some from the Customize tab',
+                          'Tap below to set up your daily routine',
                           style: TextStyle(
                             color: colorScheme.onSurfaceVariant,
                           ),
+                        ),
+                        const SizedBox(height: 16),
+                        FilledButton.tonalIcon(
+                          onPressed: () => Get.toNamed(AppRoutes.customizeSchedule)?.then((_) => controller.reload()),
+                          icon: const Icon(Icons.tune_rounded),
+                          label: const Text('Customize Routine'),
                         ),
                       ],
                     ),
@@ -166,6 +173,11 @@ class ScheduleView extends GetView<ScheduleController> {
               child: TabHeader(
                 title: 'Daily Schedule',
                 subtitle: DateFormat('EEEE, MMM d').format(DateTime.now()),
+                trailing: IconButton(
+                  icon: const Icon(Icons.tune_rounded),
+                  tooltip: 'Customize Routine',
+                  onPressed: () => Get.toNamed(AppRoutes.customizeSchedule)?.then((_) => controller.reload()),
+                ),
                 bottom: total == 0
                     ? null
                     : Column(

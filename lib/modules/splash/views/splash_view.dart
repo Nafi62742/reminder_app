@@ -3,6 +3,9 @@ import 'package:get/get.dart';
 
 import '../../../core/constants/app_constants.dart';
 
+import '../../../app/routes/app_routes.dart';
+import '../../../core/services/notification_service.dart';
+
 /// Brief branded pause shown while the native launch screen hands off to
 /// Flutter. Native Android launch screens can only show a static
 /// image/color (no dynamic text), so this is the only way to show the app
@@ -32,7 +35,18 @@ class _SplashViewState extends State<SplashView> {
       }
     });
     Future.delayed(const Duration(milliseconds: 1600), () {
-      if (mounted) Get.offAllNamed(widget.nextRoute);
+      if (!mounted) return;
+      if (Get.isRegistered<NotificationService>()) {
+        final notifService = Get.find<NotificationService>();
+        final reminderId = notifService.launchedReminderId;
+        if (reminderId != null) {
+          notifService.launchedReminderId = null;
+          Get.offAllNamed(AppRoutes.main);
+          Get.toNamed(AppRoutes.alarmRinging, arguments: reminderId);
+          return;
+        }
+      }
+      Get.offAllNamed(widget.nextRoute);
     });
   }
 

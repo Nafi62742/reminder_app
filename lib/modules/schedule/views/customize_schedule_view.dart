@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 
 import '../../../core/utils/schedule_time_formatter.dart';
 import '../../../data/models/schedule_item_model.dart';
-import '../../../widgets/tab_header.dart';
 import '../controllers/customize_schedule_controller.dart';
 
 class CustomizeScheduleView extends GetView<CustomizeScheduleController> {
@@ -11,119 +10,125 @@ class CustomizeScheduleView extends GetView<CustomizeScheduleController> {
 
   @override
   Widget build(BuildContext context) {
-    final topPadding = MediaQuery.of(context).padding.top + 96.0;
-
     return Scaffold(
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Obx(() {
-              final items = controller.items;
-              if (items.isEmpty) {
-                return Center(
-                  child: Text(
-                    'Tap + to add your first routine item',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                );
-              }
-              return ReorderableListView.builder(
-                padding: EdgeInsets.only(
-                  top: topPadding + 8,
-                  bottom: 24,
+      appBar: AppBar(
+        title: const Text('Customize Routine'),
+      ),
+      body: Obx(() {
+        final items = controller.items;
+        if (items.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.edit_note_outlined,
+                  size: 64,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
                 ),
-                itemCount: items.length,
-                onReorderItem: controller.reorder,
-                itemBuilder: (context, index) {
-                  final item = items[index];
-                  final colorScheme = Theme.of(context).colorScheme;
-                  return Card(
-                    key: ValueKey(item.id),
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 6),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 4),
-                      child: Row(
+                const SizedBox(height: 16),
+                Text(
+                  'No routine items yet',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Tap + below to add your first routine item',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+        return ReorderableListView.builder(
+          padding: const EdgeInsets.only(
+            top: 12,
+            bottom: 88,
+          ),
+          itemCount: items.length,
+          onReorderItem: controller.reorder,
+          itemBuilder: (context, index) {
+            final item = items[index];
+            final colorScheme = Theme.of(context).colorScheme;
+            return Card(
+              key: ValueKey(item.id),
+              margin: const EdgeInsets.symmetric(
+                  horizontal: 16, vertical: 6),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 12, vertical: 4),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 36,
+                      height: 36,
+                      margin: const EdgeInsets.only(right: 12),
+                      decoration: BoxDecoration(
+                        color: colorScheme.primaryContainer,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        item.timeMinutes != null
+                            ? Icons.access_time
+                            : Icons.check_circle_outline,
+                        size: 18,
+                        color: colorScheme.onPrimaryContainer,
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Container(
-                            width: 36,
-                            height: 36,
-                            margin: const EdgeInsets.only(right: 12),
-                            decoration: BoxDecoration(
-                              color: colorScheme.primaryContainer,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              item.timeMinutes != null
-                                  ? Icons.access_time
-                                  : Icons.check_circle_outline,
-                              size: 18,
-                              color: colorScheme.onPrimaryContainer,
-                            ),
+                          Text(
+                            item.title,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w600),
                           ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  item.title,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                if (item.timeMinutes != null)
-                                  Text(
-                                    ScheduleTimeFormatter.formatMinutes(
-                                        item.timeMinutes!),
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: colorScheme.onSurfaceVariant,
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.edit_outlined),
-                            onPressed: () =>
-                                _showItemDialog(context, item: item),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.delete_outline),
-                            onPressed: () => controller.deleteItem(item),
-                          ),
-                          ReorderableDragStartListener(
-                            index: index,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 4),
-                              child: Icon(
-                               Icons.drag_handle,
+                          if (item.timeMinutes != null)
+                            Text(
+                              ScheduleTimeFormatter.formatMinutes(
+                                  item.timeMinutes!),
+                              style: TextStyle(
+                                fontSize: 12,
                                 color: colorScheme.onSurfaceVariant,
                               ),
                             ),
-                          ),
                         ],
                       ),
                     ),
-                  );
-                },
-              );
-            }),
-          ),
-          const Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: TabHeader(
-              title: 'Customize',
-              subtitle: 'Edit your daily routine items',
-            ),
-          ),
-        ],
-      ),
+                    IconButton(
+                      icon: const Icon(Icons.edit_outlined),
+                      onPressed: () =>
+                          _showItemDialog(context, item: item),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete_outline),
+                      onPressed: () => controller.deleteItem(item),
+                    ),
+                    ReorderableDragStartListener(
+                      index: index,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: Icon(
+                          Icons.drag_handle,
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      }),
       floatingActionButton: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(18),

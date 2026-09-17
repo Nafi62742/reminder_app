@@ -59,6 +59,8 @@ class RemindersController extends GetxController {
     final today = DateTimeFormatter.startOfDay(DateTime.now());
     reminders.assignAll(
       all.where((r) {
+        // Completed reminders are archived in History, not shown in active list.
+        if (r.isCompleted) return false;
         // Undated reminders always appear in the main list.
         if (r.dateTime == null) return true;
         return !DateTimeFormatter.startOfDay(r.dateTime!).isBefore(today);
@@ -107,5 +109,5 @@ class RemindersController extends GetxController {
         ?.then((_) => _loadReminders());
   }
 
-  void goToHistory() => Get.toNamed(AppRoutes.reminderHistory);
+  void goToHistory() => Get.toNamed(AppRoutes.reminderHistory)?.then((_) => _loadReminders());
 }

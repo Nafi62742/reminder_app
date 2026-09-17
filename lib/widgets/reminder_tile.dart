@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../core/services/calendar_service.dart';
 import '../core/utils/date_time_formatter.dart';
 import '../data/models/reminder_model.dart';
 
@@ -105,6 +106,25 @@ class ReminderTile extends StatelessWidget {
                           ],
                         ),
                       ),
+                      if (reminder.dateTime != null)
+                        IconButton(
+                          icon: const Icon(Icons.calendar_today_outlined),
+                          iconSize: 20,
+                          tooltip: 'Add to Calendar',
+                          color: colorScheme.onSurfaceVariant,
+                          onPressed: () async {
+                            final success =
+                                await CalendarService.addReminderToCalendar(reminder);
+                            if (!success && context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Could not open calendar for this reminder'),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            }
+                          },
+                        ),
                       IconButton(
                         icon: const Icon(Icons.delete_outline),
                         color: colorScheme.onSurfaceVariant,

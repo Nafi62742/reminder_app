@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 
 import '../../profile/views/profile_view.dart';
 import '../../reminders/views/reminders_view.dart';
-import '../../schedule/views/customize_schedule_view.dart';
 import '../../schedule/views/schedule_view.dart';
+import '../bindings/main_shell_binding.dart';
 import '../controllers/main_shell_controller.dart';
 
 class MainShellView extends GetView<MainShellController> {
@@ -12,6 +12,10 @@ class MainShellView extends GetView<MainShellController> {
 
   @override
   Widget build(BuildContext context) {
+    if (!Get.isRegistered<MainShellController>()) {
+      MainShellBinding().dependencies();
+    }
+
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDark = colorScheme.brightness == Brightness.dark;
@@ -23,7 +27,6 @@ class MainShellView extends GetView<MainShellController> {
         children: const [
           RemindersView(),
           ScheduleView(),
-          CustomizeScheduleView(),
           ProfileView(),
         ],
       ),
@@ -56,8 +59,7 @@ class MainShellView extends GetView<MainShellController> {
                 children: [
                   _buildNavItem(context, 0, Icons.checklist_outlined, Icons.checklist, 'Reminders'),
                   _buildNavItem(context, 1, Icons.wb_sunny_outlined, Icons.wb_sunny, 'Schedule'),
-                  _buildNavItem(context, 2, Icons.edit_note_outlined, Icons.edit_note, 'Customize'),
-                  _buildNavItem(context, 3, Icons.settings_outlined, Icons.settings, 'Settings'),
+                  _buildNavItem(context, 2, Icons.settings_outlined, Icons.settings, 'Settings'),
                 ],
               ),
             ),

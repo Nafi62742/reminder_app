@@ -10,6 +10,7 @@ import 'core/services/notification_service.dart';
 import 'core/services/storage_service.dart';
 import 'data/repositories/reminder_repository.dart';
 import 'data/repositories/schedule_repository.dart';
+import 'modules/shell/bindings/main_shell_binding.dart';
 import 'modules/splash/views/splash_view.dart';
 
 Future<void> main() async {
@@ -50,6 +51,7 @@ class ReminderApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: initialTheme,
       themeMode: ThemeMode.light,
+      initialBinding: MainShellBinding(),
       home: SplashView(nextRoute: nextRoute),
       getPages: AppPages.pages,
     );

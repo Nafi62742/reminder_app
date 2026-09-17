@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../core/services/calendar_service.dart';
 import '../../../core/services/notification_service.dart';
 import '../../../data/models/reminder_model.dart';
 import '../../../data/repositories/reminder_repository.dart';
@@ -111,5 +112,45 @@ class ReminderFormController extends GetxController {
       }
     }
     Get.back();
+  }
+
+  Future<void> addToCalendar() async {
+    final title = titleController.text.trim();
+    if (title.isEmpty) {
+      errorText.value = 'Please enter a title first';
+      return;
+    }
+    DateTime? dateTime;
+    final date = selectedDate.value;
+    final time = selectedTime.value;
+    if (date != null && time != null) {
+      dateTime = DateTime(date.year, date.month, date.day, time.hour, time.minute);
+    } else if (date != null) {
+      dateTime = DateTime(date.year, date.month, date.day, 9, 0);
+    }
+
+    if (dateTime == null) {
+      errorText.value = 'Please pick a date first';
+      return;
+    }
+
+    errorText.value = null;
+    final dummy = ReminderModel(
+      id: _editing?.id ?? DateTime.now().millisecondsSinceEpoch % 100000,
+      title: title,
+      description: descriptionController.text.trim().isEmpty
+          ? null
+          : descriptionController.text.trim(),
+      dateTime: dateTime,
+    );
+
+    final success = await CalendarService.addReminderToCalendar(dummy);
+    if (!success) {
+      Get.snackbar(
+        'Calendar',
+        'Could not open device calendar.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
   }
 }

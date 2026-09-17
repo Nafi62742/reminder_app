@@ -12,6 +12,13 @@ class ReminderFormView extends GetView<ReminderFormController> {
     return Scaffold(
       appBar: AppBar(
         title: Text(controller.isEditing ? 'Edit Reminder' : 'New Reminder'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.calendar_month_outlined),
+            tooltip: 'Add to Device Calendar',
+            onPressed: controller.addToCalendar,
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -82,6 +89,12 @@ class ReminderFormView extends GetView<ReminderFormController> {
             ElevatedButton(
               onPressed: controller.save,
               child: Text(controller.isEditing ? 'Save Changes' : 'Add Reminder'),
+            ),
+            const SizedBox(height: 12),
+            OutlinedButton.icon(
+              onPressed: controller.addToCalendar,
+              icon: const Icon(Icons.event_available_outlined),
+              label: const Text('Add to Device Calendar'),
             ),
           ],
         ),

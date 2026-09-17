@@ -40,6 +40,7 @@ dependencies:
   flutter_local_notifications: ^18.0.1
   timezone: ^0.9.4
   permission_handler: ^12.0.3
+  add_2_calendar: ^3.0.1
 
   # Local persistence — app data (name, reminders) never leaves the device
   shared_preferences: ^2.3.2
@@ -89,10 +90,10 @@ flutter_launcher_icons:
 
 flutter_native_splash:
   color: "#0061A4"
-  image: assets/icon/app_icon.png
+  image: assets/app_banner.png
   android_12:
     color: "#0061A4"
-    image: assets/icon/app_icon.png
+    image: assets/app_banner.png
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

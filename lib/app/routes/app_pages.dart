@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 
 import '../../modules/onboarding/bindings/onboarding_binding.dart';
 import '../../modules/onboarding/views/onboarding_view.dart';
-import '../../modules/profile/views/profile_settings_view.dart';
 import '../../modules/reminders/bindings/reminder_form_binding.dart';
 import '../../modules/reminders/bindings/reminder_history_binding.dart';
 import '../../modules/reminders/views/reminder_form_view.dart';
@@ -11,6 +10,9 @@ import '../../modules/shell/bindings/main_shell_binding.dart';
 import '../../modules/shell/views/main_shell_view.dart';
 import '../../modules/alarm/bindings/alarm_ringing_binding.dart';
 import '../../modules/alarm/views/alarm_ringing_view.dart';
+import '../../modules/profile/views/backup_restore_view.dart';
+import '../../modules/profile/views/profile_settings_view.dart';
+import '../../modules/schedule/views/customize_schedule_view.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -45,6 +47,14 @@ class AppPages {
     GetPage(
       name: AppRoutes.profileSettings,
       page: () => const ProfileSettingsView(),
+    ),
+    GetPage(
+      name: AppRoutes.customizeSchedule,
+      page: () => const CustomizeScheduleView(),
+    ),
+    GetPage(
+      name: AppRoutes.backupRestore,
+      page: () => const BackupRestoreView(),
     ),
     GetPage(
       name: AppRoutes.alarmRinging,

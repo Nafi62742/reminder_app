@@ -22,12 +22,35 @@ class MainShellBinding extends Bindings {
     final scheduleRepository = Get.find<ScheduleRepository>();
     final reminderRepository = Get.find<ReminderRepository>();
     
-    Get.put(RemindersController(reminderRepository, notifications, storage, scheduleRepository));
-    Get.put(ScheduleController(scheduleRepository));
-    Get.put(CustomizeScheduleController(scheduleRepository));
-
-    Get.put(ProfileController(storage, scheduleRepository));
-
-    Get.put(MainShellController());
+    if (!Get.isRegistered<RemindersController>()) {
+      Get.put(
+        RemindersController(reminderRepository, notifications, storage, scheduleRepository),
+        permanent: true,
+      );
+    }
+    if (!Get.isRegistered<ScheduleController>()) {
+      Get.put(
+        ScheduleController(scheduleRepository),
+        permanent: true,
+      );
+    }
+    if (!Get.isRegistered<CustomizeScheduleController>()) {
+      Get.put(
+        CustomizeScheduleController(scheduleRepository),
+        permanent: true,
+      );
+    }
+    if (!Get.isRegistered<ProfileController>()) {
+      Get.put(
+        ProfileController(storage, scheduleRepository),
+        permanent: true,
+      );
+    }
+    if (!Get.isRegistered<MainShellController>()) {
+      Get.put(
+        MainShellController(),
+        permanent: true,
+      );
+    }
   }
 }
