@@ -37,7 +37,7 @@ class NotificationService extends GetxService {
     channelDescription: channelDescription,
     importance: Importance.max,
     priority: Priority.max,
-    largeIcon: const DrawableResourceAndroidBitmap('ic_launcher_foreground'),
+    largeIcon: const DrawableResourceAndroidBitmap('ic_notification_large'),
     playSound: true,
     sound: const UriAndroidNotificationSound('content://settings/system/alarm_alert'),
     audioAttributesUsage: AudioAttributesUsage.alarm,
@@ -73,7 +73,7 @@ class NotificationService extends GetxService {
     tz_data.initializeTimeZones();
     _setLocalTimeZone();
 
-    const androidInit = AndroidInitializationSettings('ic_launcher_foreground');
+    const androidInit = AndroidInitializationSettings('ic_notification');
     const darwinInit = DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
@@ -81,7 +81,7 @@ class NotificationService extends GetxService {
     );
 
     await _plugin.initialize(
-      const InitializationSettings(
+      settings: const InitializationSettings(
         android: androidInit,
         iOS: darwinInit,
       ),
@@ -116,8 +116,12 @@ class NotificationService extends GetxService {
       if (androidPlugin == null) return;
 
       // Delete deprecated channel IDs if they exist
-      await androidPlugin.deleteNotificationChannel('reminders_alarm_channel');
-      await androidPlugin.deleteNotificationChannel('reminders_alarm_channel_v2');
+      await androidPlugin.deleteNotificationChannel(
+        channelId: 'reminders_alarm_channel',
+      );
+      await androidPlugin.deleteNotificationChannel(
+        channelId: 'reminders_alarm_channel_v2',
+      );
 
       // Create new max-importance channel
       final alarmChannel = AndroidNotificationChannel(
@@ -242,50 +246,44 @@ class NotificationService extends GetxService {
 
     try {
       await _plugin.zonedSchedule(
-        reminder.id,
-        reminder.title,
-        reminder.description,
-        targetDateTime,
-        NotificationDetails(
+        id: reminder.id,
+        title: reminder.title,
+        body: reminder.description,
+        scheduledDate: targetDateTime,
+        notificationDetails: NotificationDetails(
           android: _androidDetails,
           iOS: _darwinDetails,
         ),
         androidScheduleMode: primaryMode,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
         payload: reminder.id.toString(),
       );
     } catch (e) {
       debugPrint('Primary alarmClock schedule failed ($e), falling back to exactAllowWhileIdle');
       try {
         await _plugin.zonedSchedule(
-          reminder.id,
-          reminder.title,
-          reminder.description,
-          targetDateTime,
-          NotificationDetails(
+          id: reminder.id,
+          title: reminder.title,
+          body: reminder.description,
+          scheduledDate: targetDateTime,
+          notificationDetails: NotificationDetails(
             android: _androidDetails,
             iOS: _darwinDetails,
           ),
           androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-          uiLocalNotificationDateInterpretation:
-              UILocalNotificationDateInterpretation.absoluteTime,
           payload: reminder.id.toString(),
         );
       } catch (fallbackError) {
         debugPrint('Fallback exact schedule also failed ($fallbackError), scheduling inexact');
         await _plugin.zonedSchedule(
-          reminder.id,
-          reminder.title,
-          reminder.description,
-          targetDateTime,
-          NotificationDetails(
+          id: reminder.id,
+          title: reminder.title,
+          body: reminder.description,
+          scheduledDate: targetDateTime,
+          notificationDetails: NotificationDetails(
             android: _androidDetails,
             iOS: _darwinDetails,
           ),
           androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-          uiLocalNotificationDateInterpretation:
-              UILocalNotificationDateInterpretation.absoluteTime,
           payload: reminder.id.toString(),
         );
       }
@@ -310,6 +308,6 @@ class NotificationService extends GetxService {
   }
 
   Future<void> cancelReminder(int id) async {
-    await _plugin.cancel(id);
+    await _plugin.cancel(id: id);
   }
 }

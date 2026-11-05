@@ -168,16 +168,16 @@ class ProfileController extends GetxController {
 
   Future<void> importBackupFromFile() async {
     try {
-      final result = await FilePicker.pickFiles(
+      final files = await FilePicker.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['json'],
       );
 
-      if (result == null || result.files.single.path == null) {
+      if (files.isEmpty || files.single.path == null) {
         return;
       }
 
-      final path = result.files.single.path!;
+      final path = files.single.path!;
       final file = File(path);
       final content = await file.readAsString();
 
