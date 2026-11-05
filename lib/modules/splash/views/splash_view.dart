@@ -127,14 +127,8 @@ class _SplashViewState extends State<SplashView> {
                   Container(
                     width: 160,
                     height: 160,
-                    clipBehavior: Clip.antiAlias,
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(44),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.25),
-                        width: 1.5,
-                      ),
+                      borderRadius: BorderRadius.circular(36),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withValues(alpha: 0.2),
@@ -145,7 +139,7 @@ class _SplashViewState extends State<SplashView> {
                     ),
                     padding: EdgeInsets.zero,
                     child: Image.asset(
-                      'assets/icon/app_icon.png',
+                      'assets/icon/splash_icon.png',
                       fit: BoxFit.contain,
                       errorBuilder: (context, error, stackTrace) => const Icon(
                         Icons.notifications_active_rounded,

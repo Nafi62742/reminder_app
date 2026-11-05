@@ -85,15 +85,18 @@ flutter_launcher_icons:
   image_path: "assets/icon/app_icon.png"
   min_sdk_android: 21
   remove_alpha_ios: true
-  adaptive_icon_background: "#0061A4"
-  adaptive_icon_foreground: "assets/icon/app_icon.png"
+  # Full-bleed gradient + bell artwork is the background layer (masked by the
+  # launcher shape); the foreground is intentionally transparent.
+  adaptive_icon_background: "assets/icon/app_icon.png"
+  adaptive_icon_foreground: "assets/icon/app_icon_foreground.png"
 
 flutter_native_splash:
-  color: "#0061A4"
-  image: assets/app_banner.png
+  color: "#031A5E"
+  image: assets/icon/splash_icon.png
   android_12:
-    color: "#0061A4"
-    image: assets/app_banner.png
+    color: "#031A5E"
+    icon_background_color: "#031A5E"
+    image: assets/icon/app_icon.png
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
