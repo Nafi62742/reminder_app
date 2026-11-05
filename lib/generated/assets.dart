@@ -14,7 +14,31 @@ class $AssetsIconGen {
   const $AssetsIconGen();
 
   final AssetGenImage appIcon = const AssetGenImage('assets/icon/app_icon.png');
+  final AssetGenImage appIconForeground = const AssetGenImage(
+    'assets/icon/app_icon_foreground.png',
+  );
+  final AssetGenImage appIconLauncher = const AssetGenImage(
+    'assets/icon/app_icon_launcher.png',
+  );
+  final AssetGenImage concept1BellCheckmark = const AssetGenImage(
+    'assets/icon/concept1_bell_checkmark.png',
+  );
+  final AssetGenImage concept2ClockBell = const AssetGenImage(
+    'assets/icon/concept2_clock_bell.png',
+  );
+  final AssetGenImage concept3RWordmark = const AssetGenImage(
+    'assets/icon/concept3_r_wordmark.png',
+  );
+  final AssetGenImage concept4RipplePing = const AssetGenImage(
+    'assets/icon/concept4_ripple_ping.png',
+  );
   final AssetGenImage icon = const AssetGenImage('assets/icon/icon.png');
+  final AssetGenImage sourceIcon = const AssetGenImage(
+    'assets/icon/source_icon.jpg',
+  );
+  final AssetGenImage splashIcon = const AssetGenImage(
+    'assets/icon/splash_icon.png',
+  );
 }
 
 class AssetGenImage {
@@ -78,15 +102,8 @@ class AssetGenImage {
     );
   }
 
-  ImageProvider provider({
-    AssetBundle? bundle,
-    String? package,
-  }) {
-    return AssetImage(
-      _assetName,
-      bundle: bundle,
-      package: package,
-    );
+  ImageProvider provider({AssetBundle? bundle, String? package}) {
+    return AssetImage(_assetName, bundle: bundle, package: package);
   }
 
   Widget custom({

@@ -23,15 +23,30 @@ class OnboardingView extends GetView<OnboardingController> {
                     children: [
                       const Spacer(),
                       Center(
-                        child: Image.asset(
-                          'assets/icon/app_icon.png',
-                          width: 180,
-                          height: 180,
-                          fit: BoxFit.contain,
-                          errorBuilder: (context, error, stackTrace) => Icon(
-                            Icons.notifications_active_rounded,
-                            size: 160,
-                            color: Theme.of(context).colorScheme.primary,
+                        child: Container(
+                          width: 136,
+                          height: 136,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(32),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withValues(alpha: 0.25),
+                                blurRadius: 28,
+                                offset: const Offset(0, 12),
+                              ),
+                            ],
+                          ),
+                          child: Image.asset(
+                            'assets/icon/app_icon.png',
+                            fit: BoxFit.contain,
+                            errorBuilder: (context, error, stackTrace) => Icon(
+                              Icons.notifications_active_rounded,
+                              size: 136,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
                           ),
                         ),
                       ),
