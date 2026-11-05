@@ -70,39 +70,56 @@ class NotificationService extends GetxService {
   );
 
   Future<NotificationService> init() async {
-    tz_data.initializeTimeZones();
-    _setLocalTimeZone();
+    try {
+      tz_data.initializeTimeZones();
+      _setLocalTimeZone();
 
-    const androidInit = AndroidInitializationSettings('ic_notification');
-    const darwinInit = DarwinInitializationSettings(
-      requestAlertPermission: false,
-      requestBadgePermission: false,
-      requestSoundPermission: false,
-    );
+      const androidInit = AndroidInitializationSettings('ic_notification');
+      const darwinInit = DarwinInitializationSettings(
+        requestAlertPermission: false,
+        requestBadgePermission: false,
+        requestSoundPermission: false,
+      );
 
-    await _plugin.initialize(
-      settings: const InitializationSettings(
-        android: androidInit,
-        iOS: darwinInit,
-      ),
-      onDidReceiveNotificationResponse: _onNotificationResponse,
-      onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
-    );
-
-    // Explicitly configure and create the Android channel
-    await _configureAndroidChannels();
-
-    await requestPermissions();
-
-    // Check if cold start was triggered by notification
-    final launchDetails = await _plugin.getNotificationAppLaunchDetails();
-    if (launchDetails != null && launchDetails.didNotificationLaunchApp) {
-      final payload = launchDetails.notificationResponse?.payload;
-      final reminderId = int.tryParse(payload ?? '');
-      if (reminderId != null) {
-        launchedReminderId = reminderId;
+      try {
+        await _plugin.initialize(
+          settings: const InitializationSettings(
+            android: androidInit,
+            iOS: darwinInit,
+          ),
+          onDidReceiveNotificationResponse: _onNotificationResponse,
+          onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
+        );
+      } catch (e) {
+        debugPrint('ic_notification init failed ($e), falling back to @mipmap/ic_launcher');
+        await _plugin.initialize(
+          settings: const InitializationSettings(
+            android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+            iOS: darwinInit,
+          ),
+          onDidReceiveNotificationResponse: _onNotificationResponse,
+          onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
+        );
       }
+
+      // Explicitly configure and create the Android channel
+      await _configureAndroidChannels();
+
+      // Check if cold start was triggered by notification
+      final launchDetails = await _plugin.getNotificationAppLaunchDetails();
+      if (launchDetails != null && launchDetails.didNotificationLaunchApp) {
+        final payload = launchDetails.notificationResponse?.payload;
+        final reminderId = int.tryParse(payload ?? '');
+        if (reminderId != null) {
+          launchedReminderId = reminderId;
+        }
+      }
+    } catch (e) {
+      debugPrint('NotificationService init error: $e');
     }
+
+    // Request permissions asynchronously after startup so main() / runApp() is never blocked
+    Future.delayed(const Duration(milliseconds: 500), requestPermissions);
 
     return this;
   }
